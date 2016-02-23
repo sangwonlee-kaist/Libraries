@@ -7,7 +7,7 @@
 
 int
 main()
-    {
+try {
     iast_core myiast;
    
     interpolation_isotherm isotherm_array[] 
@@ -21,7 +21,7 @@ main()
     myiast.set_temperature(300.0);
     myiast.set_composition({5.0, 4.0, 3.0, 2.0, 1.0});
     
-    for (double P = 0.001; P < 1000.1; P *= pow(10, 1.0 / 20.0))
+    for (double P = 0.001; P < 1000.1; P *= pow(10, 1.0 / 10.0))
         {
         myiast.set_pressure(P);
         auto result = myiast.calculate();
@@ -35,4 +35,8 @@ main()
         }        
         
     return 0;
+    }
+catch (std::exception& e)
+    {
+    std::cout << e.what() << std::endl;
     }

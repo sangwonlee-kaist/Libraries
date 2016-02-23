@@ -247,7 +247,7 @@ root_finder::solve()
     for (size_t iter {}; iter < MAX_ITERS; ++iter)
         {
         // save iterations.
-        m_iterations = iter;
+        m_iterations = iter + 1;
         // calculate gradient from jacobian matrix.
         cal_eqn_values(vars, eqn_values);
         cal_jacobian(vars, eqn_values, jacobian);

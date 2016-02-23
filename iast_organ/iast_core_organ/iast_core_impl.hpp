@@ -119,9 +119,9 @@ iast_core::calculate()
     root_finder rf;
     for (size_t i {}; i < last_i; ++i)
         {
-        rf.add_eqn([i, &f_i, &T](const root_finder::vec& p)
+        rf.add_eqn([i, last_i, &f_i, &T](const root_finder::vec& p)
             {
-            return f_i[i](T, p(i)) / f_i[i + 1](T, p(i + 1)) - 1; 
+            return f_i[i](T, p(i)) / f_i[last_i](T, p(last_i)) - 1.0; 
             });
         }
  
