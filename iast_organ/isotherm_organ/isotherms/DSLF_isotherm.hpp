@@ -22,7 +22,7 @@ public:
         override
         {
         // double p {P / 1.01325};
-    
+        double p = P;
         if (P ==  0.0)
             {
             return 0.0;
@@ -45,7 +45,7 @@ public:
         override
         {
         // double p {P / 1.01325};
-
+        double p = P;
         if (P ==  0.0)
             {
             return 0.0;
