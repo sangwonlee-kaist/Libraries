@@ -19,7 +19,7 @@ try {
     binary.set_temperature(313.0);
     binary.set_pressure(0.15);
 
-    for (double y {1.e-4}; y < 0.1; y = pow(10.0, 0.1)) 
+    for (double y {1.e-4}; y < 0.1; y *= pow(10.0, 0.1)) 
         {
         binary.set_composition({y, 1.0 - y});
 
