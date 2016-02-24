@@ -121,7 +121,7 @@ iast_core::calculate()
         {
         rf.add_eqn([i, last_i, &f_i, &T](const root_finder::vec& p)
             {
-            return f_i[i](T, p(i)) / f_i[last_i](T, p(last_i)) - 1.0; 
+            return f_i[i](T, p(i)) - f_i[last_i](T, p(last_i)); 
             });
         }
  
