@@ -30,7 +30,7 @@ try {
             {
             cout << setw(15) << ld;
             }
-        cout << endl;
+        cout << setw(15) << result.get_cycle() << endl;
         }
     
     return 0;

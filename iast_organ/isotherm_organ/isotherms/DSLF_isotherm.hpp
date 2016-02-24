@@ -21,7 +21,7 @@ public:
     loading(real_t T, real_t P) 
         override
         {
-        double p {P / 1.01325};
+        // double p {P / 1.01325};
     
         if (P ==  0.0)
             {
@@ -44,7 +44,7 @@ public:
     spreading_pressure(real_t T, real_t P) 
         override
         {
-        double p {P / 1.01325};
+        // double p {P / 1.01325};
 
         if (P ==  0.0)
             {
