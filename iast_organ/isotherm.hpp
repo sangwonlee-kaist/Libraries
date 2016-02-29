@@ -6,5 +6,6 @@
 
 #include "isotherm_organ/isotherms/interpolation_isotherm.hpp"
 #include "isotherm_organ/isotherms/DSLF_isotherm.hpp"
+#include "isotherm_organ/isotherms/Langmuir_isotherm.hpp"
 
 #endif
