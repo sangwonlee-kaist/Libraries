@@ -26,7 +26,7 @@ root_finder::vec
 root_finder::solve()
     {
     // define constans.
-    const size_t MAX_ITERS {10000};
+    const size_t MAX_ITERS {400};
     const double TOLF   {1.e-4};
     const double TOLX   {1.e-6};
     const double TOLMIN {1.e-5};
