@@ -117,11 +117,13 @@ iast_core::calculate()
    
     // find root.
     root_finder rf;
-    for (size_t i {}; i < last_i; ++i)
+    for (size_t i {0}; i < last_i; ++i)
         {
         rf.add_eqn([i, last_i, &f_i, &T](const root_finder::vec& p)
             {
-            return f_i[i](T, p(i)) - f_i[last_i](T, p(last_i)); 
+            return f_i[i](T, p(i)) / f_i[last_i](T, p(last_i)) - 1.0; 
+            //return f_i[i + 1](T, p(i + 1)) / f_i[i](T, p(i)) - 1.0; 
+            //return std::pow(f_i[i](T, p(i)) / f_i[0](T, p(0)), 3) - 1.0;
             });
         }
  
