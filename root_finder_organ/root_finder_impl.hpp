@@ -26,10 +26,10 @@ root_finder::vec
 root_finder::solve()
     {
     // define constans.
-    const size_t MAX_ITERS {400};
-    const double TOLF   {1.e-8};
-    const double TOLX   {1.e-10};
-    const double TOLMIN {1.e-9};
+    const size_t MAX_ITERS {10000};
+    const double TOLF   {1.e-4};
+    const double TOLX   {1.e-6};
+    const double TOLMIN {1.e-5};
     
     DEBUG("check D.O.F")
     // check degrees of freedom.
