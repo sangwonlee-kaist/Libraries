@@ -117,17 +117,28 @@ iast_core::calculate()
    
     // find root.
     root_finder rf;
-    for (size_t i {0}; i < last_i; ++i)
+    for (size_t i = 0; i <= last_i; ++i)
         {
-        rf.add_eqn([i, last_i, &f_i, &T](const root_finder::vec& p)
+        size_t pivotIndex = 2;
+        if (i == pivotIndex)
+            continue;
+
+        rf.add_eqn([i, last_i, &f_i, &T, pivotIndex](const root_finder::vec& p)
             {
-            return std::sin(f_i[i](T, p(i)) - f_i[last_i](T, p(last_i)));
+            //return std::log(f_i[i](T, p(i)) / f_i[last_i](T, p(last_i)));
+            //return std::log(f_i[i](T, p(i)) / f_i[i + 1](T, p(i + 1)));
+            //return f_i[i](T, p(i)) / f_i[pivotIndex](T, p(pivotIndex)) - 1.0;
+            //return std::pow(f_i[i](T, p(i)) / f_i[pivotIndex](T, p(pivotIndex)), 2) - 1.0;
+            //return std::pow(f_i[i](T, p(i)) / f_i[pivotIndex](T, p(pivotIndex)), 3) - 1.0;
+            //return std::pow(f_i[i](T, p(i)) - f_i[pivotIndex](T, p(pivotIndex)), 2);
+            return f_i[i](T, p(i)) - f_i[pivotIndex](T, p(pivotIndex));
             });
         }
  
     rf.add_eqn([&P, &y_i](const root_finder::vec& p)
         {
         return P * arma::sum(y_i / p) - 1.0;        
+        //return std::log(P * arma::sum(y_i / p));        
         });
 
     rf.set_initial_guess(po_i);
