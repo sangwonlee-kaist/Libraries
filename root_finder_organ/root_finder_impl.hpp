@@ -231,8 +231,8 @@ root_finder::solve()
             // update values.
             lam2 = lam;
             obj_value2 = obj_value;
-            // lower limit: 10 % of previous lambda.
-            lam = std::max(temp_lam, 0.1 * lam);
+            // lower limit: 1 % of previous lambda.
+            lam = std::max(temp_lam, 0.01 * lam);
             }
         // end while
         };
