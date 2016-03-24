@@ -5,7 +5,7 @@
 class DSL_isotherm : public isotherm_base
     {
 public:
-    DSL_isotherm(real_t in_q_sat1, real_t in_q_sat2
+    DSL_isotherm(real_t in_q_sat1, real_t in_q_sat2,
                       real_t in_K1,     real_t in_K2)
         :
         q_sat1 {in_q_sat1},
