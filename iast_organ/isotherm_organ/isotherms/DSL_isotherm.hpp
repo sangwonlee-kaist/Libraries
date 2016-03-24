@@ -10,7 +10,7 @@ public:
         :
         q_sat1 {in_q_sat1},
         q_sat2 {in_q_sat2},
-        K1  {in_K1}
+        K1  {in_K1},
         K2  {in_K2}
         {
         // do nothing.    
