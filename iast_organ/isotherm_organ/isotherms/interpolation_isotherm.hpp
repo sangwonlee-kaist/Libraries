@@ -38,9 +38,9 @@ public:
         
         size_t size {p.size()};
         pi.resize(size);
-
+        // initial assumption near zero.
         pi[0] = q[0];
-        
+        // cache integration values.        
         for (size_t i {1}; i < size; ++i)
             {
             double slope     {(q[i] - q[i - 1]) / (p[i] - p[i - 1])};
@@ -68,6 +68,7 @@ public:
             
         if (j == q.size())
             {
+            // Constant loading assumption.
             return q[j - 1];
             }
         
