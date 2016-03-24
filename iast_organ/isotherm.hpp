@@ -9,4 +9,5 @@
 #include "isotherm_organ/isotherms/Langmuir_isotherm.hpp"
 #include "isotherm_organ/isotherms/LF_isotherm.hpp"
 #include "isotherm_organ/isotherms/DSLF_isotherm2.hpp"
+#include "isotherm_organ/isotherms/DSL_isotherm.hpp"
 #endif
