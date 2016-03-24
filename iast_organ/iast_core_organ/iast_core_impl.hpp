@@ -141,7 +141,8 @@ iast_core::calculate()
             //return std::pow(f_i[i](T, p(i)) / f_i[pivotIndex](T, p(pivotIndex)), 2) - 1.0;
             //return std::pow(f_i[i](T, p(i)) / f_i[pivotIndex](T, p(pivotIndex)), 3) - 1.0;
             //return std::pow(f_i[i](T, p(i)) - f_i[pivotIndex](T, p(pivotIndex)), 2);
-            return f_i[i](T, p(i)) - f_i[pivotIndex](T, p(pivotIndex));
+            //return f_i[i](T, p(i)) - f_i[pivotIndex](T, p(pivotIndex));
+            return f_i[pivotIndex](T, p(pivotIndex)) / f_i[i](T, p(i)) - 1.0;
             });
         }
  
