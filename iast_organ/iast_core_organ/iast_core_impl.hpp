@@ -37,9 +37,12 @@ iast_core::set_initial_guess(const vec& loading_fractions)
 class iast_core::result
     {
 public:        
-    result(const vec& in_loadings, const size_t& in_cycle)
+    result(const vec& in_loadings, 
+           const vec& in_spreading_pressures,
+           const size_t& in_cycle)
         :
         loadings {in_loadings},
+        spreading_pressures {in_spreading_pressures},
         cycle    {in_cycle}
         {
         // nothing.    
@@ -49,6 +52,12 @@ public:
     get_loadings()
         {
         return loadings;      
+        }
+
+    vec
+    get_spreading_pressures_for_checking()
+        {
+        return spreading_pressures;
         }
         
     real_t
@@ -65,7 +74,8 @@ public:
         
 private:
     vec loadings;
-	size_t cycle;	
+    vec spreading_pressures;
+    size_t cycle;	
     };
     
 iast_core::result
@@ -119,7 +129,7 @@ iast_core::calculate()
     root_finder rf;
     for (size_t i = 0; i <= last_i; ++i)
         {
-        size_t pivotIndex = 2;
+        size_t pivotIndex = 0;
         if (i == pivotIndex)
             continue;
 
@@ -161,8 +171,16 @@ iast_core::calculate()
         {
         xs[i] = x_i(i);
         }
- 
-    return result {nt * xs, iters};
+
+    vec sp;
+    sp.resize(n_comp);
+    
+    for (size_t i {}; i <= last_i; ++i)
+        {
+        sp[i] = f_i[i](T, po_i(i));
+        }
+
+    return result {nt * xs, sp, iters};
     }
 
 #endif
