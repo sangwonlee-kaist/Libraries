@@ -15,6 +15,7 @@ public:
     void set_temperature(real_t temper);    
     void set_pressure(real_t pressure);
     void set_composition(const vec& ys);
+    void set_composition(const std::vector<double>& ys);
     void set_initial_guess(const vec& loading_fractions); 
     int size();
     

@@ -27,6 +27,13 @@ iast_core::set_composition(const vec& ys)
     m_composition = (ys / ys.sum());
     }
     
+void
+iast_core::set_composition(const std::vector<double>& ys)
+    {
+    vec temp (ys.data(), ys.size());
+    this->set_composition(temp);
+    }
+
 void 
 iast_core::set_initial_guess(const vec& loading_fractions)
     {
