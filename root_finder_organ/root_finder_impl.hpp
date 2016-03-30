@@ -26,7 +26,7 @@ root_finder::vec
 root_finder::solve()
     {
     // define constans.
-    const size_t MAX_ITERS {400};
+    const size_t MAX_ITERS {100000};
     const double TOLF   {1.e-4};
     const double TOLX   {1.e-6};
     const double TOLMIN {1.e-5};
@@ -65,6 +65,7 @@ root_finder::solve()
         {
         return 0.5 * arma::dot(eqn_values, eqn_values);
         };
+
     DEBUG(2.0 * objective(eqn_values))
     // define jacobian calculator.   
     auto cal_jacobian = 
@@ -115,7 +116,10 @@ root_finder::solve()
 
     double max_step {std::max(arma::norm(vars), static_cast<double>(dimension))};
     // move only same order of magnitude.
-    max_step *= 1.0;
+    // max_step *= 10000.0;
+    // remove maximum limit...
+    // It was very very hamful!
+    max_step = 1.0e300;
     DEBUG(max_step) 
 
     vec old_vars;
@@ -225,14 +229,16 @@ root_finder::solve()
             // end if
             if (not std::isfinite(lam))
                 {
-                // I don't know why did it occur.
+                // I don't know why it occurs.
                 throw std::runtime_error {"error: line search fails in root_finder::solve()"};
                 }
             // update values.
             lam2 = lam;
             obj_value2 = obj_value;
-            // lower limit: 1 % of previous lambda.
-            lam = std::max(temp_lam, 0.01 * lam);
+            // lower limit: 10 % of previous lambda.
+            // lambda is always positive because
+            // we are searching on minimizing direction.
+            lam = std::max(temp_lam, 0.1 * lam);
             }
         // end while
         };
@@ -242,6 +248,7 @@ root_finder::solve()
         scaled_v = v;
         scaled_v.transform([](double x) {return std::max(x, 1.0);});
         }; 
+
     DEBUG("start iteration")
     // root finding iteration.
     for (size_t iter {}; iter < MAX_ITERS; ++iter)

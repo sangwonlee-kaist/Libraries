@@ -34,6 +34,12 @@ iast_core::set_initial_guess(const vec& loading_fractions)
     m_has_initial_guess = true;
     }
 
+void
+iast_core::size()
+    {
+    return static_cast<int>(m_loadings.size());
+    }
+
 class iast_core::result
     {
 public:        
@@ -138,11 +144,11 @@ iast_core::calculate()
             //return std::log(f_i[i](T, p(i)) / f_i[last_i](T, p(last_i)));
             //return std::log(f_i[i](T, p(i)) / f_i[i + 1](T, p(i + 1)));
             //return f_i[i](T, p(i)) / f_i[pivotIndex](T, p(pivotIndex)) - 1.0;
-            //return std::pow(f_i[i](T, p(i)) / f_i[pivotIndex](T, p(pivotIndex)), 2) - 1.0;
+            return std::pow(f_i[i](T, p(i)) / f_i[pivotIndex](T, p(pivotIndex)), 2) - 1.0;
             //return std::pow(f_i[i](T, p(i)) / f_i[pivotIndex](T, p(pivotIndex)), 3) - 1.0;
             //return std::pow(f_i[i](T, p(i)) - f_i[pivotIndex](T, p(pivotIndex)), 2);
             //return f_i[i](T, p(i)) - f_i[pivotIndex](T, p(pivotIndex));
-            return f_i[pivotIndex](T, p(pivotIndex)) / f_i[i](T, p(i)) - 1.0;
+            //return std::pow(f_i[pivotIndex](T, p(pivotIndex)) / f_i[i](T, p(i)), 0.5) - 1.0;
             });
         }
  
