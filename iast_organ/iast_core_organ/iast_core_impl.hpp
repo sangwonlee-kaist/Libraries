@@ -35,9 +35,9 @@ iast_core::set_composition(const std::vector<double>& ys)
     }
 
 void 
-iast_core::set_initial_guess(const vec& loading_fractions)
+iast_core::set_initial_guess(const vec& particular_pressures)
     {
-    m_initial_guess = loading_fractions /  loading_fractions.sum(); 
+    m_initial_guess = particular_pressures; 
     m_has_initial_guess = true;
     }
 
@@ -76,7 +76,7 @@ public:
         }
 
     vec
-    get_particular_pressure()
+    get_particular_pressures()
         {
         return particular_pressures;
         }
@@ -127,11 +127,14 @@ iast_core::calculate()
     
     if (m_has_initial_guess)
         {
-//        x_i = m_initial_guess;
-        for (size_t i {}; i < n_comp; ++i)
+        // Put initial guess.
+        // po_i = m_initial_guess;
+        for (size_t i = 0; i < n_comp; ++i)
             {
-            x_i(i) = m_initial_guess[i];
+            po_i(i) = m_initial_guess[i];
             }
+        x_i = P * y_i / po_i;
+        // Turn off initial guess flag.
         m_has_initial_guess = false;
         }
     else 
@@ -141,12 +144,10 @@ iast_core::calculate()
             {
             x_i[i] = n_i[i](T, P * y_i[i]);
             }
-//        x_i /= x_i.sum();            
         x_i = arma::normalise(x_i);        
+        po_i = P * y_i / x_i;
         }
         
-    po_i = P * y_i / x_i;
-   
     // find root.
     root_finder rf;
     for (size_t i = 0; i <= last_i; ++i)
@@ -203,7 +204,15 @@ iast_core::calculate()
         sp[i] = f_i[i](T, po_i(i));
         }
 
-    return result {nt * xs, sp, po_i, iters};
+    vec parp;
+    parp.resize(n_comp);
+
+    for (size_t i {}; i <= last_i; ++i)
+        {
+        parp[i] = po_i(i);
+        }
+
+    return result {nt * xs, sp, parp, iters};
     }
 
 #endif
