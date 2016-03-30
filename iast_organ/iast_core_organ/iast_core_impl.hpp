@@ -52,11 +52,13 @@ class iast_core::result
 public:        
     result(const vec& in_loadings, 
            const vec& in_spreading_pressures,
+           const vec& in_particular_pressure,
            const size_t& in_cycle)
         :
-        loadings {in_loadings},
-        spreading_pressures {in_spreading_pressures},
-        cycle    {in_cycle}
+        loadings             {in_loadings},
+        spreading_pressures  {in_spreading_pressures},
+        particular_pressures {in_particular_pressure},
+        cycle                {in_cycle}
         {
         // nothing.    
         }
@@ -71,6 +73,12 @@ public:
     get_spreading_pressures_for_checking()
         {
         return spreading_pressures;
+        }
+
+    vec
+    get_particular_pressure()
+        {
+        return particular_pressures;
         }
         
     real_t
@@ -88,6 +96,7 @@ public:
 private:
     vec loadings;
     vec spreading_pressures;
+    vec particular_pressures;
     size_t cycle;	
     };
     
@@ -194,7 +203,7 @@ iast_core::calculate()
         sp[i] = f_i[i](T, po_i(i));
         }
 
-    return result {nt * xs, sp, iters};
+    return result {nt * xs, sp, po_i, iters};
     }
 
 #endif
