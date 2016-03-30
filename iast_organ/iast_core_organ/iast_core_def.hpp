@@ -16,6 +16,7 @@ public:
     void set_pressure(real_t pressure);
     void set_composition(const vec& ys);
     void set_initial_guess(const vec& loading_fractions); 
+    int size();
     
     class result;
     
