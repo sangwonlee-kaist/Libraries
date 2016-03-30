@@ -41,7 +41,7 @@ iast_core::set_initial_guess(const vec& loading_fractions)
     m_has_initial_guess = true;
     }
 
-void
+int
 iast_core::size()
     {
     return static_cast<int>(m_loadings.size());
