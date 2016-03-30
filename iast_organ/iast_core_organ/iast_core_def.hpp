@@ -16,7 +16,7 @@ public:
     void set_pressure(real_t pressure);
     void set_composition(const vec& ys);
     void set_composition(const std::vector<double>& ys);
-    void set_initial_guess(const vec& loading_fractions); 
+    void set_initial_guess(const vec& particular_pressures); 
     int size();
     
     class result;
