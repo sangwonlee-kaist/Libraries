@@ -65,6 +65,7 @@ root_finder::solve()
         {
         return 0.5 * arma::dot(eqn_values, eqn_values);
         };
+
     DEBUG(2.0 * objective(eqn_values))
     // define jacobian calculator.   
     auto cal_jacobian = 
@@ -117,7 +118,8 @@ root_finder::solve()
     // move only same order of magnitude.
     // max_step *= 10000.0;
     // remove maximum limit...
-    max_step *= 1.0e10;
+    // It was very very hamful!
+    max_step = 1.0e300;
     DEBUG(max_step) 
 
     vec old_vars;
