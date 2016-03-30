@@ -116,7 +116,7 @@ root_finder::solve()
 
     double max_step {std::max(arma::norm(vars), static_cast<double>(dimension))};
     // move only same order of magnitude.
-    // max_step *= 10000.0;
+    // max_step *= 100.0;
     // remove maximum limit...
     // It was very very hamful!
     max_step = 1.0e300;
