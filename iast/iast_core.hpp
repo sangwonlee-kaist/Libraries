@@ -15,7 +15,7 @@
 
 #include "isotherm.hpp"
 
-#include "iast_core_organ/iast_core_def.hpp"
-#include "iast_core_organ/iast_core_impl.hpp"
+#include "iast_core/iast_core_def.hpp"
+#include "iast_core/iast_core_impl.hpp"
 
 #endif
