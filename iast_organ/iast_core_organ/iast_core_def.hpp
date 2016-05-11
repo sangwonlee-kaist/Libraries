@@ -2,6 +2,15 @@
 #ifndef IAST_CORE_DEF_HPP
 #define IAST_CORE_DEF_HPP
 
+enum OBJECTIVE
+    {
+    DIFF = 0,
+    POW1,
+    POW2,
+    POW3,
+    POW4
+    };
+
 class iast_core
     {
 public:
@@ -21,10 +30,7 @@ public:
     
     class result;
     
-    result calculate();
-        
-    
-    
+    result calculate(OBJECTIVE objective = DIFF);
 protected:
     bool     m_has_initial_guess {false};
     real_t   m_temperature;
@@ -33,7 +39,6 @@ protected:
     vec      m_initial_guess;
     func_vec m_loadings;
     func_vec m_spreading_pressures;
-    
     };
 
 #endif

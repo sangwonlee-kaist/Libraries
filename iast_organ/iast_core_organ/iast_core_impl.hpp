@@ -2,31 +2,31 @@
 #ifndef IAST_CORE_IMPL_HPP
 #define IAST_CORE_IMPL_HPP
 
-void 
+void
 iast_core::add_isotherm(isotherm_base& iso)
     {
     m_loadings.push_back(iso.get_loading());
     m_spreading_pressures.push_back(iso.get_spreading_pressure());
     }
 
-void 
+void
 iast_core::set_temperature(real_t temper)
     {
     m_temperature = temper;
     }
-    
+
 void
 iast_core::set_pressure(real_t pressure)
     {
     m_pressure = pressure;
     }
-    
-void 
+
+void
 iast_core::set_composition(const vec& ys)
     {
     m_composition = (ys / ys.sum());
     }
-    
+
 void
 iast_core::set_composition(const std::vector<double>& ys)
     {
@@ -34,10 +34,10 @@ iast_core::set_composition(const std::vector<double>& ys)
     this->set_composition(temp);
     }
 
-void 
+void
 iast_core::set_initial_guess(const vec& particular_pressures)
     {
-    m_initial_guess = particular_pressures; 
+    m_initial_guess = particular_pressures;
     m_has_initial_guess = true;
     }
 
@@ -49,8 +49,8 @@ iast_core::size()
 
 class iast_core::result
     {
-public:        
-    result(const vec& in_loadings, 
+public:
+    result(const vec& in_loadings,
            const vec& in_spreading_pressures,
            const vec& in_particular_pressure,
            const size_t& in_cycle)
@@ -60,13 +60,13 @@ public:
         particular_pressures {in_particular_pressure},
         cycle                {in_cycle}
         {
-        // nothing.    
+        // nothing.
         }
-    
-    vec 
+
+    vec
     get_loadings()
         {
-        return loadings;      
+        return loadings;
         }
 
     vec
@@ -80,7 +80,7 @@ public:
         {
         return particular_pressures;
         }
-        
+
     real_t
     get_total_loading()
         {
@@ -92,16 +92,16 @@ public:
         {
         return cycle;
         }
-        
+
 private:
     vec loadings;
     vec spreading_pressures;
     vec particular_pressures;
-    size_t cycle;	
+    size_t cycle;
     };
-    
+
 iast_core::result
-iast_core::calculate()
+iast_core::calculate(OBJECTIVE objective)
     {
     auto  T   = m_temperature;
     auto  P   = m_pressure;
@@ -110,10 +110,10 @@ iast_core::calculate()
 //    auto& y_i = m_composition;
     auto  n_comp = m_composition.size();
     auto  last_i = n_comp - 1;
-    
+
     root_finder::vec po_i;
     po_i.resize(n_comp);
-    
+
     root_finder::vec y_i;
     y_i.resize(n_comp);
 
@@ -124,7 +124,7 @@ iast_core::calculate()
 
     root_finder::vec x_i;
     x_i.resize(n_comp);
-    
+
     if (m_has_initial_guess)
         {
         // Put initial guess.
@@ -137,17 +137,17 @@ iast_core::calculate()
         // Turn off initial guess flag.
         m_has_initial_guess = false;
         }
-    else 
+    else
         {
         // guess adsorbed phase fraction.
         for (size_t i {}; i < n_comp; ++i)
             {
             x_i[i] = n_i[i](T, P * y_i[i]);
             }
-        x_i = arma::normalise(x_i);        
+        x_i = arma::normalise(x_i);
         po_i = P * y_i / x_i;
         }
-        
+
     // find root.
     root_finder rf;
     for (size_t i = 0; i <= last_i; ++i)
@@ -156,39 +156,62 @@ iast_core::calculate()
         if (i == pivotIndex)
             continue;
 
-        rf.add_eqn([i, last_i, &f_i, &T, pivotIndex](const root_finder::vec& p)
+        if (objective == DIFF)
             {
-            //return std::log(f_i[i](T, p(i)) / f_i[last_i](T, p(last_i)));
-            //return std::log(f_i[i - 1](T, p(i - 1)) / f_i[i](T, p(i)));
-            //return          f_i[i](T, p(i)) / f_i[pivotIndex](T, p(pivotIndex))     - 1.0;
-            //return std::pow(f_i[i](T, p(i)) / f_i[pivotIndex](T, p(pivotIndex)), 2) - 1.0;
-            //return std::pow(f_i[i - 1](T, p(i - 1)) / f_i[i](T, p(i)), 2) - 1.0;
-            return std::pow(f_i[i](T, p(i)) / f_i[pivotIndex](T, p(pivotIndex)), 3) - 1.0;
-            //return std::pow(f_i[i](T, p(i)) - f_i[pivotIndex](T, p(pivotIndex)), 2);
-            //return f_i[i](T, p(i)) - f_i[pivotIndex](T, p(pivotIndex));
-            //return std::pow(f_i[pivotIndex](T, p(pivotIndex)) / f_i[i](T, p(i)), 0.5) - 1.0;
-            });
+            rf.add_eqn([i, last_i, &f_i, &T, pivotIndex](const root_finder::vec& p)
+                {
+                return f_i[i](T, p(i)) - f_i[pivotIndex](T, p(pivotIndex));
+                });
+            }
+        else if (objective == POW1)
+            {
+            rf.add_eqn([i, last_i, &f_i, &T, pivotIndex](const root_finder::vec& p)
+                {
+                return  f_i[i](T, p(i)) / f_i[pivotIndex](T, p(pivotIndex)) - 1.0;
+                });
+            }
+        else if (objective == POW2)
+            {
+            rf.add_eqn([i, last_i, &f_i, &T, pivotIndex](const root_finder::vec& p)
+                {
+                return std::pow(f_i[i](T, p(i)) / f_i[pivotIndex](T, p(pivotIndex)), 2) - 1.0;
+                });
+            }
+        else if (objective == POW3)
+            {
+            rf.add_eqn([i, last_i, &f_i, &T, pivotIndex](const root_finder::vec& p)
+                {
+                return std::pow(f_i[i](T, p(i)) / f_i[pivotIndex](T, p(pivotIndex)), 3) - 1.0;
+                });
+            }
+        else if (objective == POW4)
+            {
+            rf.add_eqn([i, last_i, &f_i, &T, pivotIndex](const root_finder::vec& p)
+                {
+                return std::pow(f_i[i](T, p(i)) / f_i[pivotIndex](T, p(pivotIndex)), 4) - 1.0;
+                });
+            }
         }
- 
+
     rf.add_eqn([&P, &y_i](const root_finder::vec& p)
         {
-        return P * arma::sum(y_i / p) - 1.0;        
-        //return std::log(P * arma::sum(y_i / p));        
+        return P * arma::sum(y_i / p) - 1.0;
+        //return std::log(P * arma::sum(y_i / p));
         });
 
     rf.set_initial_guess(po_i);
     po_i = rf.solve();
     size_t iters = rf.get_iterations();
     x_i = P * y_i / po_i;
-        
+
     double nt {};
-            
+
     for (size_t i {}; i <= last_i; ++i)
         {
         nt += x_i(i) / n_i[i](T, po_i[i]);
         }
     nt = 1.0 / nt;
-   
+
     vec xs;
     xs.resize(n_comp);
 
@@ -199,7 +222,7 @@ iast_core::calculate()
 
     vec sp;
     sp.resize(n_comp);
-    
+
     for (size_t i {}; i <= last_i; ++i)
         {
         sp[i] = f_i[i](T, po_i(i));
