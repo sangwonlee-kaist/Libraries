@@ -27,19 +27,21 @@ root_finder::solve()
     {
     // define constans.
     const size_t MAX_ITERS {100000};
-    const double TOLF   {1.e-4};
-    const double TOLX   {1.e-6};
-    const double TOLMIN {1.e-5};
+    const double TOLF   {1.e-7};
+    const double TOLX   {1.e-9};
+    const double TOLMIN {1.e-8};
     
     DEBUG("check D.O.F")
     // check degrees of freedom.
     if (m_variables.n_elem > m_equations.size())
         {
-        throw std::invalid_argument {"error: dim of var > dim of eqns in root_finder::solve()"};
+        throw std::invalid_argument 
+            {"error: dim of var > dim of eqns in root_finder::solve()"};
         } 
     else if (m_variables.n_elem < m_equations.size())   
         {
-        throw std::invalid_argument {"error: dim of var < dim of eqns in root_finder::solve()"};
+        throw std::invalid_argument 
+            {"error: dim of var < dim of eqns in root_finder::solve()"};
         }
     
     const size_t dimension {m_variables.n_elem};
