@@ -18,5 +18,5 @@
     #include <ctime>
 #endif
 
-#include "simplex_organ/simplex_def.hpp"
-#include "simplex_organ/simplex_impl.hpp"
+#include "simplex/simplex_def.hpp"
+#include "simplex/simplex_impl.hpp"
