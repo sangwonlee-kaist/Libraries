@@ -10,5 +10,5 @@
 #include <iostream>
 #include <iomanip>
 
-#include "root_finder_organ/root_finder_def.hpp"
-#include "root_finder_organ/root_finder_impl.hpp"
+#include "root_finder/root_finder_def.hpp"
+#include "root_finder/root_finder_impl.hpp"
