@@ -100,6 +100,18 @@ private:
     size_t cycle;
     };
 
+std::ostream&
+operator << (std::ostream& os, iast_core::result& result)
+    {
+    for (const auto& ld : result.get_loadings())
+        os << std::setw(15) << ld;
+
+    for (const auto& sp : result.get_spreading_pressures_for_checking())
+        os << std::setw(15) << sp;
+
+    return os;
+    }
+
 iast_core::result
 iast_core::calculate(OBJECTIVE objective)
     {
