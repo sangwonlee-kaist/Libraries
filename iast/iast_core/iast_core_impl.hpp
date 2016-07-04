@@ -109,6 +109,9 @@ operator << (std::ostream& os, iast_core::result& result)
     for (const auto& sp : result.get_spreading_pressures_for_checking())
         os << std::setw(15) << sp;
 
+    for (const auto& pp : result.get_particular_pressures())
+        os << std::setw(15) << pp;
+
     return os;
     }
 
