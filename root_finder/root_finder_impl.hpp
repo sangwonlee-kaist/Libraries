@@ -87,9 +87,8 @@ root_finder::solve()
             temp = vars(i);
             h = EPS * std::abs(temp);
             if (h == 0.0)
-                {
                 h = EPS;
-                }
+
             vars(i) = temp + h;
             h = vars(i) - temp;
 
@@ -104,6 +103,7 @@ root_finder::solve()
     // make d by d matrix.
     mat jacobian {arma::zeros<mat>(dimension, dimension)};
 
+    DEBUG("Calculate Jacobian")
     cal_jacobian(vars, eqn_values, jacobian);
     vec gradient = arma::trans(jacobian) * eqn_values;
 
@@ -113,8 +113,9 @@ root_finder::solve()
 
     bool is_spurious;
     // check if initial guess is root.
-    if (arma::abs(eqn_values).min() < 0.01 * TOLF)
+    if (arma::abs(eqn_values).max() < 0.01 * TOLF)
         {
+        DEBUG(is_spurious)
         is_spurious = false;
         return vars;
         }
@@ -147,9 +148,8 @@ root_finder::solve()
 
         double slope = arma::dot(gradient, direction);
         if (slope >= 0.0)
-            {
-            throw std::runtime_error {"error: roundoff problem in line search of root_finder::solve()"};
-            }
+            throw std::runtime_error
+                {"error: roundoff problem in line search of root_finder::solve()"};
 
         vec abs_vars = arma::abs(old_vars);
         abs_vars.transform([](double x) {return (x > 1.0 ? x : 1.0);});
