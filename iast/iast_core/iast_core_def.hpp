@@ -39,10 +39,22 @@ protected:
     func_vec m_loadings;
     func_vec m_spreading_pressures;
 
+// Version 2 functions.
+// Bad... design...
+
 public:
     // For fixed Temperature...
     // 1) Find x_i at given P and y_i
-    result calculate1(OBJECTIVE objective = DIFF);
+    struct Result1;
+    Result1 calculate1(OBJECTIVE objective = DIFF);
+
+    // 2) Find y_i and n_total at given P and x_i
+    struct Result2;
+    Result2 calculate2(OBJECTIVE objective = DIFF);
+
+    // 3) Find y_i and P at given n_total and x_i
+    //struct Result3;
+    //Result3 calculate3(OBJECTIVE objective = DIFF);
     };
 
 #endif
