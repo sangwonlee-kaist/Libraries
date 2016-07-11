@@ -16,7 +16,6 @@ class iast_core
 public:
     typedef double real_t;
     typedef std::valarray<real_t> vec;
-    typedef std::valarray<std::array<real_t, 2>> sp_mat;
     typedef std::vector<isotherm_base::func_t> func_vec;
 
     void add_isotherm(isotherm_base& iso);
@@ -39,6 +38,11 @@ protected:
     vec      m_initial_guess;
     func_vec m_loadings;
     func_vec m_spreading_pressures;
+
+public:
+    // For fixed Temperature...
+    // 1) Find x_i at given P and y_i
+    result calculate1(OBJECTIVE objective = DIFF);
     };
 
 #endif
