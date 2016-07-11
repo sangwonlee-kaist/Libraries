@@ -21,21 +21,21 @@ public:
 
     void add_isotherm(isotherm_base& iso);
 
-    void set_temperature(real_t temper);    
+    void set_temperature(real_t temper);
     void set_pressure(real_t pressure);
     void set_composition(const vec& ys);
     void set_composition(const std::vector<double>& ys);
-    void set_initial_guess(const vec& particular_pressures); 
+    void set_initial_guess(const vec& particular_pressures);
     int size();
-    
+
     class result;
-    
+
     result calculate(OBJECTIVE objective = DIFF);
 protected:
     bool     m_has_initial_guess {false};
     real_t   m_temperature;
     real_t   m_pressure;
-    vec      m_composition;  
+    vec      m_composition;
     vec      m_initial_guess;
     func_vec m_loadings;
     func_vec m_spreading_pressures;
