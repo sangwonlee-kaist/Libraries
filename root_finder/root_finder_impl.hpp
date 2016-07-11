@@ -3,13 +3,16 @@
 //#define ROOT_FINDER_DEBUG
 
 #ifdef  ROOT_FINDER_DEBUG
-    #define DEBUG(x) std::cout << "[DEBUG] " << #x << " = " << (x) << std::endl;
+    #define DEBUG(x) std::cout << "[DEBUG] " << \
+                        "File: " << __FILE__ << ", " << \
+                        "Line: " << __LINE__ << ", " << \
+                        #x << " = " << (x) << std::endl;
 #else
-    #define DEBUG(x) 
+    #define DEBUG(x)
 #endif
 
 // add system of equations.
-void 
+void
 root_finder::add_eqn(func_t equation)
     {
     m_equations.push_back(equation);
@@ -30,47 +33,47 @@ root_finder::solve()
     const double TOLF   {1.e-7};
     const double TOLX   {1.e-9};
     const double TOLMIN {1.e-8};
-    
+
     DEBUG("check D.O.F")
     // check degrees of freedom.
     if (m_variables.n_elem > m_equations.size())
         {
-        throw std::invalid_argument 
+        throw std::invalid_argument
             {"error: dim of var > dim of eqns in root_finder::solve()"};
-        } 
-    else if (m_variables.n_elem < m_equations.size())   
+        }
+    else if (m_variables.n_elem < m_equations.size())
         {
-        throw std::invalid_argument 
+        throw std::invalid_argument
             {"error: dim of var < dim of eqns in root_finder::solve()"};
         }
-    
+
     const size_t dimension {m_variables.n_elem};
     auto& eqns = m_equations;
     auto& vars = m_variables;
     DEBUG(dimension)
-    // define equation vector calculator. 
+    // define equation vector calculator.
     auto cal_eqn_values = [&eqns, &dimension](const vec& vars, vec& eqn_values)
         {
-        DEBUG("begin cal_eqn_values") 
+        DEBUG("begin cal_eqn_values")
         DEBUG(eqn_values.n_elem)
         for (size_t dim {}; dim < dimension; ++dim)
             {
             eqn_values(dim) = eqns[dim](vars);
             DEBUG(eqn_values(dim))
-            } 
-        };          
-    
+            }
+        };
+
     vec eqn_values (arma::size(vars));
-    cal_eqn_values(vars, eqn_values); 
+    cal_eqn_values(vars, eqn_values);
     DEBUG(eqn_values)
-    auto objective = [](const vec& eqn_values) -> double 
+    auto objective = [](const vec& eqn_values) -> double
         {
         return 0.5 * arma::dot(eqn_values, eqn_values);
         };
 
     DEBUG(2.0 * objective(eqn_values))
-    // define jacobian calculator.   
-    auto cal_jacobian = 
+    // define jacobian calculator.
+    auto cal_jacobian =
     [&cal_eqn_values](vec& vars, const vec& eqn_values, mat& jacob)
         {
         const double EPS  {1.e-7};
@@ -83,7 +86,7 @@ root_finder::solve()
             {
             temp = vars(i);
             h = EPS * std::abs(temp);
-            if (h == 0.0) 
+            if (h == 0.0)
                 {
                 h = EPS;
                 }
@@ -94,12 +97,12 @@ root_finder::solve()
             vars(i) = temp;
             // calculate i col of jacobian.
             // [dF_i/dx_1 dF_i/dx_2 dF_i/dx_3 ... dF_i/dx_n]^t <- transpose.
-            jacob.col(i) = (near_values - eqn_values) / h;             
+            jacob.col(i) = (near_values - eqn_values) / h;
             }
         };
 
     // make d by d matrix.
-    mat jacobian {arma::zeros<mat>(dimension, dimension)};    
+    mat jacobian {arma::zeros<mat>(dimension, dimension)};
 
     cal_jacobian(vars, eqn_values, jacobian);
     vec gradient = arma::trans(jacobian) * eqn_values;
@@ -122,15 +125,15 @@ root_finder::solve()
     // remove maximum limit...
     // It was very very hamful!
     max_step = 1.0e300;
-    DEBUG(max_step) 
+    DEBUG(max_step)
 
     vec old_vars;
     vec direction;
     double old_obj_value;
     // define line_search algorithm.
-    auto line_search = 
+    auto line_search =
         [&vars, &old_vars, &obj_value, &old_obj_value,
-         &gradient, &direction, &max_step, &objective, 
+         &gradient, &direction, &max_step, &objective,
          &cal_eqn_values, &eqn_values, &TOLX, &is_spurious]()
         {
         const double ALPHA {1.e-4};
@@ -152,7 +155,7 @@ root_finder::solve()
         abs_vars.transform([](double x) {return (x > 1.0 ? x : 1.0);});
         // same as maximum of |dFdx / x|
         double lam_in = TOLX / arma::abs(direction / abs_vars).max();
-        
+
         double lam  {1.0};
         double lam2 {};
         double obj_value2 {};
@@ -212,7 +215,7 @@ root_finder::solve()
                             {
                             temp_lam = (-b + std::sqrt(disc)) / 3.0 / a;
                             }
-                        else 
+                        else
                             {
                             temp_lam = -slope / (b + std::sqrt(disc));
                             }
@@ -249,7 +252,7 @@ root_finder::solve()
         {
         scaled_v = v;
         scaled_v.transform([](double x) {return std::max(x, 1.0);});
-        }; 
+        };
 
     DEBUG("start iteration")
     // root finding iteration.
@@ -268,17 +271,17 @@ root_finder::solve()
         bool is_solved = arma::solve(direction, jacobian, -eqn_values);
         if (not is_solved)
             {
-            throw std::runtime_error {"error: jacobian is singluar in root_finer::solve()"};  
+            throw std::runtime_error {"error: jacobian is singluar in root_finer::solve()"};
             }
         // move along to the Newtone direction.
-        line_search();       
+        line_search();
         // check convergence.
         if (arma::abs(eqn_values).max() < TOLF)
             {
             DEBUG(iter);
             is_spurious = false;
             break;
-            } 
+            }
 
         vec scaled_vars;
         scale_vec(arma::abs(vars), scaled_vars);
@@ -292,7 +295,7 @@ root_finder::solve()
                 is_spurious = true;
                 throw std::runtime_error {"error: spurious solution in root_finder::solve()"};
                 }
-            else 
+            else
                 {
                 is_spurious = false;
                 }
@@ -302,18 +305,18 @@ root_finder::solve()
         if ((arma::abs(vars - old_vars) / scaled_vars).max() < TOLX)
             {
             break;
-            }     
+            }
 
         if (iter + 1 == MAX_ITERS)
             {
             throw std::runtime_error {"error: MAX_ITERS exceeded in root_finder::solve()"};
-            }   
+            }
         }
-    DEBUG(vars);    
+    DEBUG(vars);
     DEBUG(eqn_values);
 
     return vars;
-    } 
+    }
 
 size_t
 root_finder::get_iterations()
