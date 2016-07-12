@@ -53,8 +53,12 @@ public:
     Result2 calculate2(OBJECTIVE objective = DIFF);
 
     // 3) Find y_i and P at given n_total and x_i
-    //struct Result3;
-    //Result3 calculate3(OBJECTIVE objective = DIFF);
+    struct Result3;
+    Result3 calculate3(OBJECTIVE objective = DIFF);
+
+    void setTotalLoading(double totalLoading);
+protected:
+    double mTotalLoading;
     };
 
 #endif
