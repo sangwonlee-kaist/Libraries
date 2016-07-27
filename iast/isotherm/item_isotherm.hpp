@@ -121,7 +121,7 @@ ItemIsotherm::loading(RealType T, RealType P)
     std::string Tstr = std::to_string(T);
 
     if (Tstr == std::to_string(mRefTemperature))
-        //return mRefIsotherm.loading(T, P);
+     //   return mRefrLoading(T, P);
 
     if (mTargetIsotherms.count(Tstr) == 0)
         {
@@ -145,7 +145,7 @@ ItemIsotherm::spreading_pressure(RealType T, RealType P)
     std::string Tstr = std::to_string(T);
 
     if (Tstr == std::to_string(mRefTemperature))
-        //return mRefIsotherm.loading(T, P);
+    //    return mRefSpreadingPressure(T, P);
 
     return 0.0;
     }
