@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cmath>
-    
 class Langmuir_isotherm : public isotherm_base
     {
 public:
@@ -14,14 +12,14 @@ public:
         }
         
     real_t 
-    loading(real_t T, real_t P) 
+    loading(real_t T, real_t P)
         override
         {
         return q_sat * K * P / (1.0 + K * P);
         }
         
     real_t 
-    spreading_pressure(real_t T, real_t P) 
+    spreading_pressure(real_t T, real_t P)
         override
         {
         return q_sat * std::log(1.0 + K * P);

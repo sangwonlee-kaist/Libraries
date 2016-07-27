@@ -1,19 +1,11 @@
 #pragma once
 
-#include <cmath>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <stdexcept>
-#include <iostream>
-#include <iomanip>
-
 class interpolation_isotherm : public isotherm_base
     {
 public:
-    interpolation_isotherm(const std::string& filename)
+    interpolation_isotherm() : p {}, q {}, pi {} {}
+    interpolation_isotherm(const std::string& filename) :
+        p {}, q {}, pi {}
         {
         std::ifstream ifs {filename};
 
@@ -104,8 +96,35 @@ public:
         return pi[j - 1] + slope * (P - p[j - 1]) + intercept * std::log(P / p[j - 1]);
         }
 
+    real_t getMaxLoading() {return q.back();}
+    real_t getMaxPressure() {return p.back();}
+    real_t push_back(real_t _p, real_t _q)
+        {
+        p.push_back(_p);
+        q.push_back(_q);
+
+        pi.resize(p.size());
+
+        if (p.size() == 1)
+            {
+            pi[0] = q[0];
+            }
+        else
+            {
+            int i = p.size() - 1;
+
+            double slope     {(q[i] - q[i - 1]) / (p[i] - p[i - 1])};
+            double intercept {-slope * p[i] + q[i]};
+
+            pi[i] = pi[i - 1] + slope * (p[i] - p[i - 1]) + intercept * std::log(p[i] / p[i - 1]);
+            }
+        }
 private:
     std::vector<double> p;
     std::vector<double> q;
     std::vector<double> pi;
     };
+
+
+
+

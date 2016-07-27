@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cmath>
-
 class LF_isotherm : public isotherm_base
     {
 public:

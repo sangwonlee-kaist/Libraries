@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cmath>
-
 class DslfIsotherm : public isotherm_base
     {
 public:
