@@ -11,5 +11,6 @@
 #include "isotherm/isotherms/LF_isotherm.hpp"
 #include "isotherm/isotherms/DSLF_isotherm2.hpp"
 #include "isotherm/isotherms/DSL_isotherm.hpp"
+#include "isotherm/isotherms/DSLF_isotherm_standard.hpp"
 
 #endif
