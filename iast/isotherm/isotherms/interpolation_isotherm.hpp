@@ -43,7 +43,7 @@ public:
         }
 
     real_t
-    loading(real_t T, real_t P)
+    loading(real_t T, real_t P) const
         override
         {
         if (P <= 0.0)
@@ -70,7 +70,7 @@ public:
         }
 
     real_t
-    spreading_pressure(real_t T, real_t P)
+    spreading_pressure(real_t T, real_t P) const
         override
         {
         if (P <= 0.0)
@@ -118,6 +118,10 @@ public:
 
             pi[i] = pi[i - 1] + slope * (p[i] - p[i - 1]) + intercept * std::log(p[i] / p[i - 1]);
             }
+        }
+    bool empty() const
+        {
+        return p.empty();
         }
 private:
     std::vector<double> p;

@@ -10,6 +10,8 @@ main()
     interpolation_isotherm test;
     interpolation_isotherm n {"n.dat"};
 
+    //cout << test.getMaxPressure() << endl;
+
     cout << n.getMaxPressure() << endl;
     cout << n.getMaxLoading() << endl;
     n.push_back(10010.0, 15.00);
@@ -24,7 +26,12 @@ main()
 
 
     // Test 2 ====================================================
-    ItemIsotherm {n, 293.0, "Q.dat"};
+    cout << "Test 2" << endl;
+    interpolation_isotherm n2 {"h2o.dat"};
+    for (double nn = 0.1; nn < 42.0; nn += 0.1)
+        {
+        cout << ItemIsotherm {n2, 293.0, "Q.dat"}.inverseIsotherm(nn) << ", " << nn << endl;
+        }
 
     return 0;
     }

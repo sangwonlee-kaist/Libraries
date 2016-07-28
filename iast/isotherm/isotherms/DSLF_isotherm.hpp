@@ -16,7 +16,7 @@ public:
         }
         
     real_t 
-    loading(real_t T, real_t P)
+    loading(real_t T, real_t P) const
         override
         {
         double p {P / 1.01325};
@@ -39,7 +39,7 @@ public:
         }
         
     real_t 
-    spreading_pressure(real_t T, real_t P)
+    spreading_pressure(real_t T, real_t P) const
         override
         {
         double p {P / 1.01325};

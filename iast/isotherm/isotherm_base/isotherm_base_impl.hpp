@@ -3,7 +3,7 @@
 #define ISOTHERM_BASE_IMPL_HPP
 
 isotherm_base::func_t
-isotherm_base::get_loading()
+isotherm_base::get_loading() const
     {
     return [&](real_t T, real_t P) -> real_t
         {
@@ -12,7 +12,7 @@ isotherm_base::get_loading()
     }
 
 isotherm_base::func_t 
-isotherm_base::get_spreading_pressure()
+isotherm_base::get_spreading_pressure() const
     {
     return [&](real_t T, real_t P) -> real_t 
         {

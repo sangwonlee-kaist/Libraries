@@ -95,13 +95,17 @@ public:
     ItemIsotherm(const isotherm_base& isothermBase,
                  const double&        refTemperature,
                  const std::string&   filename);
-    RealType            loading(RealType T, RealType P) override;
-    RealType spreading_pressure(RealType T, RealType P) override;
+    RealType            loading(RealType T, RealType P) const override;
+    RealType spreading_pressure(RealType T, RealType P) const override;
 private:
-    double               mRefTemperature;
-    const isotherm_base& mRefIsotherm;
-    IsothermContainer    mTargetIsotherms;
-    Interpolator         mIsostericHeat;
+    double                    mRefTemperature;
+    const isotherm_base&      mRefIsotherm;
+    mutable IsothermContainer mTargetIsotherms;
+    Interpolator              mIsostericHeat;
+
+    void checkAndExpand(const std::string& Tstr, double P) const;
+public:
+    double inverseIsotherm(double loading) const;
     };
 
 ItemIsotherm::ItemIsotherm(const isotherm_base& isothermBase,
@@ -116,13 +120,35 @@ ItemIsotherm::ItemIsotherm(const isotherm_base& isothermBase,
     }
 
 ItemIsotherm::RealType
-ItemIsotherm::loading(RealType T, RealType P)
+ItemIsotherm::loading(RealType T, RealType P) const
     {
     std::string Tstr = std::to_string(T);
 
     if (Tstr == std::to_string(mRefTemperature))
-     //   return mRefrLoading(T, P);
+       return mRefIsotherm.loading(T, P);
 
+    this->checkAndExpand(Tstr, P);
+
+    return 0.0;
+    }
+
+ItemIsotherm::RealType
+ItemIsotherm::spreading_pressure(RealType T, RealType P) const
+    {
+    std::string Tstr = std::to_string(T);
+
+    if (Tstr == std::to_string(mRefTemperature))
+        return mRefIsotherm.spreading_pressure(T, P);
+
+    this->checkAndExpand(Tstr, P);
+
+    return 0.0;
+    }
+
+void
+ItemIsotherm::checkAndExpand(const std::string& Tstr, double P) const
+    {
+    // Check temperature data exist.
     if (mTargetIsotherms.count(Tstr) == 0)
         {
         mTargetIsotherms[Tstr] = interpolation_isotherm {};
@@ -130,22 +156,65 @@ ItemIsotherm::loading(RealType T, RealType P)
 
     interpolation_isotherm& iso = mTargetIsotherms[Tstr];
 
-    if (P > iso.getMaxPressure())
+    if (iso.empty())
         {
-        // Expand data.
+        // push first data.
 
         }
 
-    return 0.0;
+    while (P > iso.getMaxPressure())
+        {
+        // Expand data.
+        }
+
     }
 
-ItemIsotherm::RealType
-ItemIsotherm::spreading_pressure(RealType T, RealType P)
+// It would be nice if we implement Invertible decolator.
+double
+ItemIsotherm::inverseIsotherm(double loading) const
     {
-    std::string Tstr = std::to_string(T);
+    // Secant Method.
+    double oldP = 1.0;
+    double newP = 0.0;
+    double oldN = 0.0;
+    double newN = 0.0;
+    int iter = 0;
+    int maxIter = 100;
 
-    if (Tstr == std::to_string(mRefTemperature))
-    //    return mRefSpreadingPressure(T, P);
+    double loadingGuess = mRefIsotherm.loading(mRefTemperature, oldP);
+    while (loadingGuess < loading)
+        {
+        oldP *= 1.5;
+        loadingGuess = mRefIsotherm.loading(mRefTemperature, oldP);
+        }
 
-    return 0.0;
+    oldN = 0.0;
+    newN = loadingGuess;
+
+    // oldP >> newP >> nextP ...
+    for (iter = 0; iter < maxIter; ++iter)
+        {
+        std::cout << oldP << std::endl;
+        
+        double slope = (newN - oldN) / (newP - oldP);
+        double nextP = newP - newN / slope;
+        //newP = oldP / mRefIsotherm.loading(mRefTemperature, oldP) * loading;
+        if (std::abs(1.0 - nextP / newP) < 1.e-4)
+            break;
+
+        oldP = newP;
+        oldN = newN;
+        newP = nextP;
+        newN = mRefIsotherm.loading(mRefTemperature, nextP);
+        }
+
+    if (iter == maxIter)
+        {
+        loadingGuess = mRefIsotherm.loading(mRefTemperature, newP);
+        if (std::abs(1.0 - loadingGuess / loading) > 0.1)
+            throw std::runtime_error
+                {"ItemIsotherm::inverseIsotherm: inversing fails."};
+        }
+
+    return newP;
     }

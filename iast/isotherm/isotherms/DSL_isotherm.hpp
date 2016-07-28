@@ -15,13 +15,13 @@ public:
         }
         
     real_t 
-    loading(real_t T, real_t P) override
+    loading(real_t T, real_t P) const override
         {
         return q_sat1 * K1 * P / (1.0 + K1 * P) + q_sat2 * K2 * P / (1.0 + K2 * P);
         }
         
     real_t 
-    spreading_pressure(real_t T, real_t P) override
+    spreading_pressure(real_t T, real_t P) const override
         {
         return q_sat1 * std::log(1.0 + K1 * P) + q_sat2 * std::log(1.0 + K2 * P);
         }       

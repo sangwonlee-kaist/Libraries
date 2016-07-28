@@ -12,7 +12,7 @@ public:
         }
 
     real_t
-    loading(real_t T, real_t P) override
+    loading(real_t T, real_t P) const override
         {
         if (P <= 0.0)
             return 0.0;
@@ -24,7 +24,7 @@ public:
         }
 
     real_t
-    spreading_pressure(real_t T, real_t P) override
+    spreading_pressure(real_t T, real_t P) const override
         {
         if (P <=  0.0)
             return 0.0;

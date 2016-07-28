@@ -1,0 +1,375 @@
+[1mdiff --git a/iast/isotherm/isotherm_base/isotherm_base_def.hpp b/iast/isotherm/isotherm_base/isotherm_base_def.hpp[m
+[1mindex a0e17a5..694371b 100644[m
+[1m--- a/iast/isotherm/isotherm_base/isotherm_base_def.hpp[m
+[1m+++ b/iast/isotherm/isotherm_base/isotherm_base_def.hpp[m
+[36m@@ -8,12 +8,12 @@[m [mpublic:[m
+     typedef double real_t;[m
+     typedef std::function<real_t(real_t, real_t)> func_t;[m
+ [m
+[31m-    func_t get_loading();[m
+[31m-    func_t get_spreading_pressure();[m
+[32m+[m[32m    func_t get_loading() const;[m
+[32m+[m[32m    func_t get_spreading_pressure() const;[m
+     [m
+     // units: temperature = K and pressure = bar. [m
+[31m-    virtual real_t loading(real_t temper, real_t press)           = 0;[m
+[31m-    virtual real_t spreading_pressure(real_t temper, real_t press) = 0;[m
+[32m+[m[32m    virtual real_t loading(real_t temper, real_t press) const          = 0;[m
+[32m+[m[32m    virtual real_t spreading_pressure(real_t temper, real_t press) const = 0;[m
+     };[m
+ [m
+ #endif[m
+[1mdiff --git a/iast/isotherm/isotherm_base/isotherm_base_impl.hpp b/iast/isotherm/isotherm_base/isotherm_base_impl.hpp[m
+[1mindex 449e54b..6e25591 100644[m
+[1m--- a/iast/isotherm/isotherm_base/isotherm_base_impl.hpp[m
+[1m+++ b/iast/isotherm/isotherm_base/isotherm_base_impl.hpp[m
+[36m@@ -3,7 +3,7 @@[m
+ #define ISOTHERM_BASE_IMPL_HPP[m
+ [m
+ isotherm_base::func_t[m
+[31m-isotherm_base::get_loading()[m
+[32m+[m[32misotherm_base::get_loading() const[m
+     {[m
+     return [&](real_t T, real_t P) -> real_t[m
+         {[m
+[36m@@ -12,7 +12,7 @@[m [misotherm_base::get_loading()[m
+     }[m
+ [m
+ isotherm_base::func_t [m
+[31m-isotherm_base::get_spreading_pressure()[m
+[32m+[m[32misotherm_base::get_spreading_pressure() const[m
+     {[m
+     return [&](real_t T, real_t P) -> real_t [m
+         {[m
+[1mdiff --git a/iast/isotherm/isotherms/DSLF_isotherm.hpp b/iast/isotherm/isotherms/DSLF_isotherm.hpp[m
+[1mindex dc67497..af37692 100644[m
+[1m--- a/iast/isotherm/isotherms/DSLF_isotherm.hpp[m
+[1m+++ b/iast/isotherm/isotherms/DSLF_isotherm.hpp[m
+[36m@@ -16,7 +16,7 @@[m [mpublic:[m
+         }[m
+         [m
+     real_t [m
+[31m-    loading(real_t T, real_t P)[m
+[32m+[m[32m    loading(real_t T, real_t P) const[m
+         override[m
+         {[m
+         double p {P / 1.01325};[m
+[36m@@ -39,7 +39,7 @@[m [mpublic:[m
+         }[m
+         [m
+     real_t [m
+[31m-    spreading_pressure(real_t T, real_t P)[m
+[32m+[m[32m    spreading_pressure(real_t T, real_t P) const[m
+         override[m
+         {[m
+         double p {P / 1.01325};[m
+[1mdiff --git a/iast/isotherm/isotherms/DSLF_isotherm2.hpp b/iast/isotherm/isotherms/DSLF_isotherm2.hpp[m
+[1mindex d3ec4cf..e3561ca 100644[m
+[1m--- a/iast/isotherm/isotherms/DSLF_isotherm2.hpp[m
+[1m+++ b/iast/isotherm/isotherms/DSLF_isotherm2.hpp[m
+[36m@@ -16,7 +16,7 @@[m [mpublic:[m
+         }[m
+ [m
+     real_t[m
+[31m-    loading(real_t T, real_t P)[m
+[32m+[m[32m    loading(real_t T, real_t P) const[m
+         override[m
+         {[m
+         double p = P;[m
+[36m@@ -38,7 +38,7 @@[m [mpublic:[m
+         }[m
+ [m
+     real_t[m
+[31m-    spreading_pressure(real_t T, real_t P)[m
+[32m+[m[32m    spreading_pressure(real_t T, real_t P) const[m
+         override[m
+         {[m
+         double p = P;[m
+[1mdiff --git a/iast/isotherm/isotherms/DSLF_isotherm_standard.hpp b/iast/isotherm/isotherms/DSLF_isotherm_standard.hpp[m
+[1mindex fb9a62c..e2e8fab 100644[m
+[1m--- a/iast/isotherm/isotherms/DSLF_isotherm_standard.hpp[m
+[1m+++ b/iast/isotherm/isotherms/DSLF_isotherm_standard.hpp[m
+[36m@@ -12,7 +12,7 @@[m [mpublic:[m
+         }[m
+ [m
+     real_t[m
+[31m-    loading(real_t T, real_t P) override[m
+[32m+[m[32m    loading(real_t T, real_t P) const override[m
+         {[m
+         if (P <= 0.0)[m
+             return 0.0;[m
+[36m@@ -24,7 +24,7 @@[m [mpublic:[m
+         }[m
+ [m
+     real_t[m
+[31m-    spreading_pressure(real_t T, real_t P) override[m
+[32m+[m[32m    spreading_pressure(real_t T, real_t P) const override[m
+         {[m
+         if (P <=  0.0)[m
+             return 0.0;[m
+[1mdiff --git a/iast/isotherm/isotherms/DSL_isotherm.hpp b/iast/isotherm/isotherms/DSL_isotherm.hpp[m
+[1mindex 1269468..4d6da27 100644[m
+[1m--- a/iast/isotherm/isotherms/DSL_isotherm.hpp[m
+[1m+++ b/iast/isotherm/isotherms/DSL_isotherm.hpp[m
+[36m@@ -15,13 +15,13 @@[m [mpublic:[m
+         }[m
+         [m
+     real_t [m
+[31m-    loading(real_t T, real_t P) override[m
+[32m+[m[32m    loading(real_t T, real_t P) const override[m
+         {[m
+         return q_sat1 * K1 * P / (1.0 + K1 * P) + q_sat2 * K2 * P / (1.0 + K2 * P);[m
+         }[m
+         [m
+     real_t [m
+[31m-    spreading_pressure(real_t T, real_t P) override[m
+[32m+[m[32m    spreading_pressure(real_t T, real_t P) const override[m
+         {[m
+         return q_sat1 * std::log(1.0 + K1 * P) + q_sat2 * std::log(1.0 + K2 * P);[m
+         }       [m
+[1mdiff --git a/iast/isotherm/isotherms/LF_isotherm.hpp b/iast/isotherm/isotherms/LF_isotherm.hpp[m
+[1mindex bb176e8..1e683f2 100644[m
+[1m--- a/iast/isotherm/isotherms/LF_isotherm.hpp[m
+[1m+++ b/iast/isotherm/isotherms/LF_isotherm.hpp[m
+[36m@@ -13,14 +13,14 @@[m [mpublic:[m
+         }[m
+ [m
+     real_t[m
+[31m-    loading(real_t T, real_t P)[m
+[32m+[m[32m    loading(real_t T, real_t P) const[m
+         override[m
+         {[m
+         return q_sat * K * std::pow(P, v) / (1.0 + K * std::pow(P, v));[m
+         }[m
+ [m
+     real_t[m
+[31m-    spreading_pressure(real_t T, real_t P)[m
+[32m+[m[32m    spreading_pressure(real_t T, real_t P) const[m
+         override[m
+         {[m
+         return q_sat / v * std::log(1.0 + K * std::pow(P, v));[m
+[1mdiff --git a/iast/isotherm/isotherms/Langmuir_isotherm.hpp b/iast/isotherm/isotherms/Langmuir_isotherm.hpp[m
+[1mindex 0e90dd1..968bff5 100644[m
+[1m--- a/iast/isotherm/isotherms/Langmuir_isotherm.hpp[m
+[1m+++ b/iast/isotherm/isotherms/Langmuir_isotherm.hpp[m
+[36m@@ -12,14 +12,14 @@[m [mpublic:[m
+         }[m
+         [m
+     real_t [m
+[31m-    loading(real_t T, real_t P)[m
+[32m+[m[32m    loading(real_t T, real_t P) const[m
+         override[m
+         {[m
+         return q_sat * K * P / (1.0 + K * P);[m
+         }[m
+         [m
+     real_t [m
+[31m-    spreading_pressure(real_t T, real_t P)[m
+[32m+[m[32m    spreading_pressure(real_t T, real_t P) const[m
+         override[m
+         {[m
+         return q_sat * std::log(1.0 + K * P);[m
+[1mdiff --git a/iast/isotherm/isotherms/interpolation_isotherm.hpp b/iast/isotherm/isotherms/interpolation_isotherm.hpp[m
+[1mindex 6f72aef..666e3db 100644[m
+[1m--- a/iast/isotherm/isotherms/interpolation_isotherm.hpp[m
+[1m+++ b/iast/isotherm/isotherms/interpolation_isotherm.hpp[m
+[36m@@ -43,7 +43,7 @@[m [mpublic:[m
+         }[m
+ [m
+     real_t[m
+[31m-    loading(real_t T, real_t P)[m
+[32m+[m[32m    loading(real_t T, real_t P) const[m
+         override[m
+         {[m
+         if (P <= 0.0)[m
+[36m@@ -70,7 +70,7 @@[m [mpublic:[m
+         }[m
+ [m
+     real_t[m
+[31m-    spreading_pressure(real_t T, real_t P)[m
+[32m+[m[32m    spreading_pressure(real_t T, real_t P) const[m
+         override[m
+         {[m
+         if (P <= 0.0)[m
+[36m@@ -119,6 +119,10 @@[m [mpublic:[m
+             pi[i] = pi[i - 1] + slope * (p[i] - p[i - 1]) + intercept * std::log(p[i] / p[i - 1]);[m
+             }[m
+         }[m
+[32m+[m[32m    bool empty() const[m
+[32m+[m[32m        {[m
+[32m+[m[32m        return p.empty();[m
+[32m+[m[32m        }[m
+ private:[m
+     std::vector<double> p;[m
+     std::vector<double> q;[m
+[1mdiff --git a/iast/isotherm/item_isotherm.hpp b/iast/isotherm/item_isotherm.hpp[m
+[1mindex 547bacb..867c5af 100644[m
+[1m--- a/iast/isotherm/item_isotherm.hpp[m
+[1m+++ b/iast/isotherm/item_isotherm.hpp[m
+[36m@@ -95,13 +95,17 @@[m [mpublic:[m
+     ItemIsotherm(const isotherm_base& isothermBase,[m
+                  const double&        refTemperature,[m
+                  const std::string&   filename);[m
+[31m-    RealType            loading(RealType T, RealType P) override;[m
+[31m-    RealType spreading_pressure(RealType T, RealType P) override;[m
+[32m+[m[32m    RealType            loading(RealType T, RealType P) const override;[m
+[32m+[m[32m    RealType spreading_pressure(RealType T, RealType P) const override;[m
+ private:[m
+[31m-    double               mRefTemperature;[m
+[31m-    const isotherm_base& mRefIsotherm;[m
+[31m-    IsothermContainer    mTargetIsotherms;[m
+[31m-    Interpolator         mIsostericHeat;[m
+[32m+[m[32m    double                    mRefTemperature;[m
+[32m+[m[32m    const isotherm_base&      mRefIsotherm;[m
+[32m+[m[32m    mutable IsothermContainer mTargetIsotherms;[m
+[32m+[m[32m    Interpolator              mIsostericHeat;[m
+[32m+[m
+[32m+[m[32m    void checkAndExpand(const std::string& Tstr, double P) const;[m
+[32m+[m[32mpublic:[m
+[32m+[m[32m    double inverseIsotherm(double loading) const;[m
+     };[m
+ [m
+ ItemIsotherm::ItemIsotherm(const isotherm_base& isothermBase,[m
+[36m@@ -116,13 +120,35 @@[m [mItemIsotherm::ItemIsotherm(const isotherm_base& isothermBase,[m
+     }[m
+ [m
+ ItemIsotherm::RealType[m
+[31m-ItemIsotherm::loading(RealType T, RealType P)[m
+[32m+[m[32mItemIsotherm::loading(RealType T, RealType P) const[m
+     {[m
+     std::string Tstr = std::to_string(T);[m
+ [m
+     if (Tstr == std::to_string(mRefTemperature))[m
+[31m-     //   return mRefrLoading(T, P);[m
+[32m+[m[32m       return mRefIsotherm.loading(T, P);[m
+[32m+[m
+[32m+[m[32m    this->checkAndExpand(Tstr, P);[m
+[32m+[m
+[32m+[m[32m    return 0.0;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32mItemIsotherm::RealType[m
+[32m+[m[32mItemIsotherm::spreading_pressure(RealType T, RealType P) const[m
+[32m+[m[32m    {[m
+[32m+[m[32m    std::string Tstr = std::to_string(T);[m
+ [m
+[32m+[m[32m    if (Tstr == std::to_string(mRefTemperature))[m
+[32m+[m[32m        return mRefIsotherm.spreading_pressure(T, P);[m
+[32m+[m
+[32m+[m[32m    this->checkAndExpand(Tstr, P);[m
+[32m+[m
+[32m+[m[32m    return 0.0;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32mvoid[m
+[32m+[m[32mItemIsotherm::checkAndExpand(const std::string& Tstr, double P) const[m
+[32m+[m[32m    {[m
+[32m+[m[32m    // Check temperature data exist.[m
+     if (mTargetIsotherms.count(Tstr) == 0)[m
+         {[m
+         mTargetIsotherms[Tstr] = interpolation_isotherm {};[m
+[36m@@ -130,22 +156,65 @@[m [mItemIsotherm::loading(RealType T, RealType P)[m
+ [m
+     interpolation_isotherm& iso = mTargetIsotherms[Tstr];[m
+ [m
+[31m-    if (P > iso.getMaxPressure())[m
+[32m+[m[32m    if (iso.empty())[m
+         {[m
+[31m-        // Expand data.[m
+[32m+[m[32m        // push first data.[m
+ [m
+         }[m
+ [m
+[31m-    return 0.0;[m
+[32m+[m[32m    while (P > iso.getMaxPressure())[m
+[32m+[m[32m        {[m
+[32m+[m[32m        // Expand data.[m
+[32m+[m[32m        }[m
+[32m+[m
+     }[m
+ [m
+[31m-ItemIsotherm::RealType[m
+[31m-ItemIsotherm::spreading_pressure(RealType T, RealType P)[m
+[32m+[m[32m// It would be nice if we implement Invertible decolator.[m
+[32m+[m[32mdouble[m
+[32m+[m[32mItemIsotherm::inverseIsotherm(double loading) const[m
+     {[m
+[31m-    std::string Tstr = std::to_string(T);[m
+[32m+[m[32m    // Secant Method.[m
+[32m+[m[32m    double oldP = 1.0;[m
+[32m+[m[32m    double newP = 0.0;[m
+[32m+[m[32m    double oldN = 0.0;[m
+[32m+[m[32m    double newN = 0.0;[m
+[32m+[m[32m    int iter = 0;[m
+[32m+[m[32m    int maxIter = 100;[m
+[32m+[m
+[32m+[m[32m    double loadingGuess = mRefIsotherm.loading(mRefTemperature, oldP);[m
+[32m+[m[32m    while (loadingGuess < loading)[m
+[32m+[m[32m        {[m
+[32m+[m[32m        oldP *= 1.5;[m
+[32m+[m[32m        loadingGuess = mRefIsotherm.loading(mRefTemperature, oldP);[m
+[32m+[m[32m        }[m
+ [m
+[31m-    if (Tstr == std::to_string(mRefTemperature))[m
+[31m-    //    return mRefSpreadingPressure(T, P);[m
+[32m+[m[32m    oldN = 0.0;[m
+[32m+[m[32m    newN = loadingGuess;[m
+ [m
+[31m-    return 0.0;[m
+[32m+[m[32m    // oldP >> newP >> nextP ...[m
+[32m+[m[32m    for (iter = 0; iter < maxIter; ++iter)[m
+[32m+[m[32m        {[m
+[32m+[m[32m        std::cout << oldP << std::endl;[m
+[32m+[m[41m        [m
+[32m+[m[32m        double slope = (newN - oldN) / (newP - oldP);[m
+[32m+[m[32m        double nextP = newP - newN / slope;[m
+[32m+[m[32m        //newP = oldP / mRefIsotherm.loading(mRefTemperature, oldP) * loading;[m
+[32m+[m[32m        if (std::abs(1.0 - nextP / newP) < 1.e-4)[m
+[32m+[m[32m            break;[m
+[32m+[m
+[32m+[m[32m        oldP = newP;[m
+[32m+[m[32m        oldN = newN;[m
+[32m+[m[32m        newP = nextP;[m
+[32m+[m[32m        newN = mRefIsotherm.loading(mRefTemperature, nextP);[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m    if (iter == maxIter)[m
+[32m+[m[32m        {[m
+[32m+[m[32m        loadingGuess = mRefIsotherm.loading(mRefTemperature, newP);[m
+[32m+[m[32m        if (std::abs(1.0 - loadingGuess / loading) > 0.1)[m
+[32m+[m[32m            throw std::runtime_error[m
+[32m+[m[32m                {"ItemIsotherm::inverseIsotherm: inversing fails."};[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m    return newP;[m
+     }[m
+[1mdiff --git a/iast/test/item/test.cpp b/iast/test/item/test.cpp[m
+[1mindex 3601d32..7b2f7d3 100644[m
+[1m--- a/iast/test/item/test.cpp[m
+[1m+++ b/iast/test/item/test.cpp[m
+[36m@@ -10,6 +10,8 @@[m [mmain()[m
+     interpolation_isotherm test;[m
+     interpolation_isotherm n {"n.dat"};[m
+ [m
+[32m+[m[32m    //cout << test.getMaxPressure() << endl;[m
+[32m+[m
+     cout << n.getMaxPressure() << endl;[m
+     cout << n.getMaxLoading() << endl;[m
+     n.push_back(10010.0, 15.00);[m
+[36m@@ -24,7 +26,12 @@[m [mmain()[m
+ [m
+ [m
+     // Test 2 ====================================================[m
+[31m-    ItemIsotherm {n, 293.0, "Q.dat"};[m
+[32m+[m[32m    cout << "Test 2" << endl;[m
+[32m+[m[32m    interpolation_isotherm n2 {"h2o.dat"};[m
+[32m+[m[32m    for (double nn = 0.1; nn < 42.0; nn += 0.1)[m
+[32m+[m[32m        {[m
+[32m+[m[32m        cout << ItemIsotherm {n2, 293.0, "Q.dat"}.inverseIsotherm(nn) << ", " << nn << endl;[m
+[32m+[m[32m        }[m
+ [m
+     return 0;[m
+     }[m
+[1mdiff --git a/iast/test/item/test.x b/iast/test/item/test.x[m
+[1mindex a23b54a..c8e485b 100755[m
+Binary files a/iast/test/item/test.x and b/iast/test/item/test.x differ
