@@ -27,12 +27,18 @@ main()
     // Test 2 ====================================================
     cout << "Test 2-1" << endl;
     interpolation_isotherm n2 {"h2o.dat"};
+    InverseIsotherm in2 {n2, 298.0};
     for (double nn = 5.0; nn < 45.0; nn += 5.0)
-        cout << ItemIsotherm {n2, 293.0, "Q.dat"}.inverseIsotherm(nn) << ", " << nn << endl;
+        cout << in2(nn) << endl;
+    //    cout << ItemIsotherm {n2, 293.0, "Q.dat"}.inverseIsotherm(nn) << ", " << nn << endl;
 
     cout << "Test 2-2" << endl;
     for (double nn = 0.1; nn < 10.0; nn += 0.1)
         cout << ItemIsotherm {n, 293.0, "Q.dat"}.inverseIsotherm(nn) << "   " << nn << endl;
+
+    cout << "Test 2-3" << endl;
+    for (double nn = 0.1; nn < 10.0; nn += 0.1)
+        cout << InverseIsotherm {n, 298.0}(nn) << "   " << nn << endl;
 
     // Test 3 ====================================================
     ItemIsotherm itemed = ItemIsotherm {n, 293.0, "Q.dat"};

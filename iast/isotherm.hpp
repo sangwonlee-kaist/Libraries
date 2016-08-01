@@ -13,6 +13,7 @@
 #include "isotherm/isotherms/DSL_isotherm.hpp"
 #include "isotherm/isotherms/DSLF_isotherm_standard.hpp"
 
+#include "isotherm/inverse_isotherm.hpp"
 #include "isotherm/item_isotherm.hpp"
 
 #endif
