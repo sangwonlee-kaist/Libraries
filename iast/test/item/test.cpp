@@ -35,6 +35,15 @@ main()
     for (double nn = 0.1; nn < 10.0; nn += 0.1)
         cout << InverseIsotherm {n, 298.0}(nn) << "   " << nn << endl;
 
+    cout << "Test 2-3" << endl;
+    for (double nn = 0.1; nn < 10.0; nn += 0.1)
+        cout << InverseIsotherm {n.get_loading(), 298.0}(nn) << "   " << nn << endl;
+
+    cout << "Test 2-4" << endl;
+    InverseIsotherm in {n.get_loading(), 298.0};
+    for (double nn = 0.1; nn < 10.0; nn += 0.1)
+        cout << in(nn) << endl;
+
     // Test 3 ====================================================
     ItemIsotherm itemed = ItemIsotherm {n, 293.0, "Q.dat"};
 

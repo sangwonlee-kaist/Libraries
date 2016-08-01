@@ -118,16 +118,7 @@ iast_core::calculate3(OBJECTIVE objective)
     for (size_t i = 0; i < n_comp; ++i)
         {
         double ni = N * x_i(i);
-        double oldP = 1.0; // 1 bar.
-        double newP = 0.0;
-        for (int iter = 0; iter < 100; ++iter)
-            {
-            newP = oldP / n_i[i](T, oldP) * ni;
-            if (std::abs(1.0 - oldP / newP) < 1.e-3)
-                break;
-            oldP = newP;
-            }
-        po_i(i) = newP;
+        po_i(i) = InverseIsotherm {n_i[i], T} (ni);
         }
 
     rootFinder.set_initial_guess(po_i);
