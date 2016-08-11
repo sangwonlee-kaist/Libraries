@@ -1,5 +1,6 @@
 #include "../../../iast.hpp"
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 int
@@ -55,6 +56,20 @@ main()
     cout << itemed.loading(303.0, 5.0) << "     " << value << endl;
 
     itemed.printPressureList();
+
+    cout << "ZIF-8 CO2 test" << endl;
+
+    DSLF_isotherm co2 {27.25, 2.122, 0.01533, 0.006895, 1.6, 0.3244};
+    ItemIsotherm co2Item (co2, 298, "Qco2.dat");
+
+    for (double t = 228.0; t < 298.0 + 0.1; t += 10.0)
+        {
+        ofstream ofs (to_string(t) + ".dat");
+        for (double p = 0.1; p <= 25.0 + 0.1; p += 0.1)
+            {
+            ofs << p << "  " << co2Item.loading(t, p) << endl;
+            }
+        }
 
     return 0;
     }
