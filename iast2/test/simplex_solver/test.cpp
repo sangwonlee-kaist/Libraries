@@ -40,7 +40,7 @@ func3(const Simplex::PointType& p)
 
 int
 main(int argc, char* argv[])
-try {
+    {
     shared_ptr<Solver> sv = make_shared<SimplexSolver>();
 
     vector<double> p = {5.0, -2.0, 5.0};
@@ -66,9 +66,40 @@ try {
 
     cout << sv->getNumFunctionCalls() << endl;
 
+    p = {1.0, 2.0};
+
+    try {
+        sv->setInitialPoint(p).solve();
+        }
+    catch (SolverException& e)
+        {
+        cout << e.what() << endl;
+        }
+
+    try {
+        sv->setOption(10, 1.0);
+        }
+    catch (SolverException& e)
+        {
+        cout << e.what() << endl;
+        }
+
+    fs[2] = [](const SimplexSolver::PointType& p) {return 1.0;};
+
+    try {
+        p = {1.0, 2.0, 3.0};
+
+        sv->setFunctions(fs).setInitialPoint(p).solve();
+        }
+    catch (NoRootException& e)
+        {
+        cout << "File: " << __FILE__ << ", Line: " << __LINE__ << ": ";
+        cout << e.what() << endl;
+        }
+    catch (SolverException& e)
+        {
+        cout << e.what() << endl;
+        }
+
     return 0;
-    }
-catch(exception& e)
-    {
-    cout << e.what() << endl;
     }

@@ -3,6 +3,8 @@
 #include <vector>
 #include <functional>
 
+#include "solver_exception.hpp"
+
 class Solver
     {
 public:

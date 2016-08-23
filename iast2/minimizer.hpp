@@ -3,6 +3,8 @@
 #include <vector>
 #include <functional>
 
+#include "minimizer_exception.hpp"
+
 class Minimizer
     {
 public:

@@ -129,6 +129,9 @@ Simplex::setOption(int option, ValueType value)
         case TOL_F:
             mTolF = value;
             break;
+        default:
+            throw MinimizerException {__FILE__, __LINE__, "Unsupported option."};
+            break;
         }
 
     return *this;

@@ -70,6 +70,9 @@ SimplexSolver::setOption(int option, ValueType value)
         case Option::TOL_F:
             mTolF = value;
             break;
+        default:
+            throw SolverException {__FILE__, __LINE__, "Unsupported option."};
+            break;
         }
 
     return *this;
@@ -78,6 +81,9 @@ SimplexSolver::setOption(int option, ValueType value)
 Solver&
 SimplexSolver::solve()
     {
+    if (mFunctions.size() != mInitialPoint.size())
+        throw SolverException {__FILE__, __LINE__, "# of functions != # of dimension."};
+
     FunctionType objective = [this](const PointType& p)
         {
         double value = 0.0;
@@ -95,6 +101,9 @@ SimplexSolver::solve()
         setOption(Simplex::Option::TOL_F, mTolF);
 
     simplex.minimize();
+
+    if (simplex.getMinimumValue() > mTolF * 100.0)
+        throw NoRootException {__FILE__, __LINE__, "No root found."};
 
     mRootPoint = simplex.getMinimumPoint();
     mNumFunctionCalls = simplex.getNumFunctionCalls();
