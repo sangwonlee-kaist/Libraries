@@ -19,7 +19,8 @@ func(const Solver::PointType& p)
 int
 main(int argc, char* argv[])
     {
-    shared_ptr<Solver> sv = make_shared<BisectionSolver>();
+    SolverFactory factory;
+    shared_ptr<Solver> sv = factory.create("bisection");
 
     vector<double> p = {0.5, 2.0};
     vector<Solver::FunctionType> fs = {func};

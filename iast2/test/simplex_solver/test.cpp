@@ -41,7 +41,8 @@ func3(const Simplex::PointType& p)
 int
 main(int argc, char* argv[])
     {
-    shared_ptr<Solver> sv = make_shared<SimplexSolver>();
+    SolverFactory factory;
+    shared_ptr<Solver> sv = factory.create("simplex");
 
     vector<double> p = {5.0, -2.0, 5.0};
     vector<Solver::FunctionType> fs= {func1, func2, func3};
