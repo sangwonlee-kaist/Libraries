@@ -234,6 +234,7 @@ Iast::modeFixPx(ValueType p, std::vector<ValueType> x)
 void
 Iast::modeFixNx(ValueType n, std::vector<ValueType> x)
     {
+    throw IastException {__FILE__, __LINE__, "Unsupported mode now."};
     mResult = {3.0, {3.0}};
     }
 
