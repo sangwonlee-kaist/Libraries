@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <sstream>
 #include "isotherm.hpp"
 
 class LangmuirIsotherm : public Isotherm
@@ -11,6 +12,8 @@ public:
 
     virtual double loading(double P) const override;
     virtual double spressure(double P) const override;
+
+    virtual std::string getInfoString() const override;
 private:
     double mQ;
     double mK;
@@ -32,4 +35,15 @@ double
 LangmuirIsotherm::spressure(double P) const
     {
     return mQ * std::log(1.0 + mK * P);
+    }
+
+std::string
+LangmuirIsotherm::getInfoString() const
+    {
+    std::stringstream ss;
+
+    ss << "Langmuir isotherm\n";
+    ss << "Q = " << mQ << ", K = " << mK;
+
+    return ss.str();
     }
