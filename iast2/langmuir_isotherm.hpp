@@ -42,8 +42,8 @@ LangmuirIsotherm::getInfoString() const
     {
     std::stringstream ss;
 
-    ss << "Langmuir isotherm\n";
-    ss << "Q = " << mQ << ", K = " << mK;
+    ss << "[Langmuir Isotherm]\n";
+    ss << "[Parameters] q = " << mQ << ", k = " << mK;
 
     return ss.str();
     }
