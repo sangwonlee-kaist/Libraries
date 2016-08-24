@@ -22,7 +22,7 @@ main(int argc, char* argv[])
     shared_ptr<Solver> sv = make_shared<BisectionSolver>();
 
     vector<double> p = {0.5, 2.0};
-    vector<Solver::FunctionType> fs= {func};
+    vector<Solver::FunctionType> fs = {func};
 
     sv->setFunctions(fs).
         setInitialPoint(p).
@@ -54,6 +54,16 @@ main(int argc, char* argv[])
 
     try {
         sv->setOption(10, 1.0);
+        }
+    catch (SolverException& e)
+        {
+        cout << e.what() << endl;
+        }
+
+    fs.push_back(func);
+
+    try {
+        sv->setFunctions(fs);
         }
     catch (SolverException& e)
         {

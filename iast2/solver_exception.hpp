@@ -31,6 +31,7 @@ SolverException::what() const noexcept
     return mMessage.c_str();
     }
 
+
 class NoRootException : public SolverException
     {
     using SolverException::SolverException;
