@@ -22,6 +22,8 @@ public:
     virtual double spressure(double P) const override;
 
     virtual std::string getInfoString() const override;
+
+    void pushBack(double p, double n);
 private:
     mutable LinearInterpolator mLoading;
     std::vector<double> mSpressure;
@@ -65,9 +67,6 @@ InterpolatorIsotherm::loading(double P) const
     return mLoading(P);
     }
 
-#include <iostream>
-using namespace std;
-
 double
 InterpolatorIsotherm::spressure(double P) const
     {
@@ -108,7 +107,32 @@ InterpolatorIsotherm::getInfoString() const
     std::stringstream ss;
 
     ss << "[Interpolator Isotherm]\n";
-    ss << "[Parameters] None";
+    ss << "[Parameters] front (x, y) = (" <<
+          mLoading.getXData().front() << ", " <<
+          mLoading.getYData().front() << ") " <<
+          ", back (x, y) = (" <<
+          mLoading.getXData().back() << ", " <<
+          mLoading.getYData().back() << ") ";
 
     return ss.str();
+    }
+
+void
+InterpolatorIsotherm::pushBack(double p, double n)
+    {
+    mLoading.pushBack(p, n);
+
+    const auto& x = mLoading.getXData();
+    const auto& y = mLoading.getYData();
+
+    // last index.
+    int i = x.size() - 1;
+
+    // y = a * x + b;
+    double a = (y[i] - y[i - 1]) / (x[i] - x[i - 1]);
+    double b = -a * x[i] + y[i];
+
+    // integrate(y / x) = a * x + log(x) + C
+    mSpressure.push_back(mSpressure.back() +
+        a * (x[i] - x[i - 1]) + b * std::log(x[i] / x[i - 1]));
     }

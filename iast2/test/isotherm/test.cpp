@@ -14,7 +14,7 @@ main(int argc, char* argv[])
     using namespace std;
     shared_ptr<Isotherm> iso = make_shared<LangmuirIsotherm>(1.0, 1.0);
 
-    double p  = 10.6;
+    double p  = 5.5;
     double dp = 1.e-6;
 
     cout << "1." << endl;
@@ -43,10 +43,12 @@ main(int argc, char* argv[])
     cout << iso->loading(p) << " = ";
     cout << (iso->spressure(p + dp) - iso->spressure(p)) / dp * p << endl;
 
-    std::vector<double> x {1.0, 2.0, 3.0, 4.0, 5.0};
-    std::vector<double> y {0.5, 0.6666, 0.75, 0.8, 0.8333333};
+    vector<double> x {1.0, 2.0, 3.0, 4.0, 5.0};
+    vector<double> y {0.5, 0.6666, 0.75, 0.8, 0.8333333};
 
     iso = make_shared<InterpolatorIsotherm>(x, y);
+
+    dynamic_pointer_cast<InterpolatorIsotherm>(iso)->pushBack(6.0, 0.857143);
 
     cout << "5." << endl;
     cout << iso->getInfoString() << endl;
