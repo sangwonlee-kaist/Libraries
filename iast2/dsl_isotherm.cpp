@@ -4,7 +4,7 @@
 #include <sstream>
 
 DslIsotherm::DslIsotherm(double q1, double k1, double q2, double k2) :
-    iso1 {q1, k2}, iso2 {q2, k2}
+    iso1 {q1, k1}, iso2 {q2, k2}, params {q1, k1, q2, k2}
     {
 
     }
