@@ -6,8 +6,8 @@
 double
 LinearInterpolator::at(double x) const
     {
-    if (xs.empty())
-        ;
+    //if (xs.empty())
+    //    ;
 
     std::size_t i = std::lower_bound(xs.begin(), xs.end(), x) - xs.begin();
 
@@ -63,6 +63,8 @@ LinearInterpolator::pushBack(double x, double y)
 Interpolator&
 LinearInterpolator::setOption(int option, double value)
     {
+    option = option;
+    value = value;
     // throw
     return *this;
     }

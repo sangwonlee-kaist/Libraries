@@ -13,8 +13,8 @@ InterpolatorIsotherm::InterpolatorIsotherm(const std::vector<double>& x,
     mLoading {std::make_shared<LinearInterpolator>()},
     mSpressure {}
     {
-    if (x.size() != y.size())
-        ;
+    //if (x.size() != y.size())
+    //    ;
 
     mLoading->setData(x, y);
 
