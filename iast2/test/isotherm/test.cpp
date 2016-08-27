@@ -3,6 +3,7 @@
 #include <memory>
 #include "../../isotherm.hpp"
 #include "../../isotherm_factory.hpp"
+#include "../../isotherm_exception.hpp"
 #include "../../interpolator_isotherm.hpp"
 
 int
@@ -52,6 +53,22 @@ main(int argc, char* argv[])
     cout << iso->getInfoString() << endl;
     cout << iso->loading(p) << " = ";
     cout << (iso->spressure(p + dp) - iso->spressure(p)) / dp * p << endl;
+
+    try {
+        factory.create("what?", {0});
+        }
+    catch(IsothermException& e)
+        {
+        cout << e.what() << endl;
+        }
+
+    try {
+        factory.create("lf", {1, 1, 3});
+        }
+    catch(IsothermException& e)
+        {
+        cout << e.what() << endl;
+        }
 
     return 0;
     }

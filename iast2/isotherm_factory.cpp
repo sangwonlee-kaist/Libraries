@@ -1,5 +1,6 @@
 #include "isotherm_factory.hpp"
 
+#include "isotherm_exception.hpp"
 #include "langmuir_isotherm.hpp"
 #include "lf_isotherm.hpp"
 #include "dsl_isotherm.hpp"
@@ -54,11 +55,11 @@ IsothermFactory::create(const std::string& name, std::vector<Any> args) const
             }
         else
             {
-            return nullptr;
+            throw IsothermException {__FILE__, __LINE__, name + ": Unsupported isotherm."};
             }
         }
     catch (AnyException& e)
         {
-        return nullptr;
+        throw IsothermException {__FILE__, __LINE__, "Invalid arguments type for " + name};
         }
     }
