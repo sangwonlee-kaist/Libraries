@@ -60,11 +60,11 @@ BisectionSolver::solve()
     // Simple Bisection Algorithm
     double xLow    = mLow;
     double xHigh   = mHigh;
-    double xCenter;
+    double xCenter = 0.0;
 
     double fLow    = mFunction(xLow);
     double fHigh   = mFunction(xHigh);
-    double fCenter;
+    double fCenter = 0.0;
 
     if (fLow * fHigh > 0.0)
         throw NoRootException {__FILE__, __LINE__, "f(low) * f(high) > 0."};

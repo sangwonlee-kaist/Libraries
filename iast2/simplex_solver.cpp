@@ -6,7 +6,7 @@ SimplexSolver::SimplexSolver() :
     mFunctions {},
     mInitialPoint {},
     mRootPoint {},
-    mNumRepeats {1},
+    mNumRepeats {5},
     mTolX {1.0e-10},
     mTolF {1.0e-10},
     mNumFunctionCalls {}

@@ -6,12 +6,12 @@
 
 Simplex::Simplex() :
     Minimizer {},
+    mNumRepeats {5},
+    mTolX {1.0e-8},
+    mTolF {1.0e-8},
     x {mPoints},
     f {mValues},
-    n {mDimension},
-    mNumRepeats {1},
-    mTolX {1.0e-10},
-    mTolF {1.0e-10}
+    n {mDimension}
     {
 
     }

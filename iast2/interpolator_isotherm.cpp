@@ -21,7 +21,8 @@ InterpolatorIsotherm::InterpolatorIsotherm(const std::vector<double>& x,
     mSpressure.resize(x.size());
     mSpressure.front() = y.front();
 
-    for (int i = 1; i < x.size(); ++i)
+    int maxi = static_cast<int>(x.size());
+    for (int i = 1; i < maxi; ++i)
         {
         // y = a * x + b;
         double a = (y[i] - y[i - 1]) / (x[i] - x[i - 1]);

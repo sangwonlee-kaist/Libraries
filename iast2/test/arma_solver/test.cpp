@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <memory>
 #include <vector>
+#include <cmath>
 
 #include "../../solver.hpp"
 #include "../../arma_solver.hpp"

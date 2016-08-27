@@ -1,20 +1,19 @@
-interpolator_isotherm.o: interpolator_isotherm.hpp interpolator_isotherm.cpp
-	g++ interpolator_isotherm.cpp -c -std=c++11 -O3
+CXX = g++
+CXXFLAGS = -O3 -std=c++11 -Wall
+SRCS = $(wildcard *.cpp)
+OBJS_ALL = $(SRCS:.cpp=.o)
+OBJS = $(patsubst arma_solver.%, , $(OBJS_ALL)) # remove arma solver. we don't need it.
+TARGET = libiast.a
 
-solver_factory.o: solver_factory.hpp solver_factory.cpp
-	g++ solver_factory.cpp -c -std=c++11 -O3
+#.SUFFIXES : .cpp. o
 
-linear_interpolator.o: linear_interpolator.hpp linear_interpolator.cpp
-	g++ linear_interpolator.cpp -c -std=c++11 -O3
+all: $(TARGET)
 
-bisection_solver.o: bisection_solver.hpp bisection_solver.cpp
-	g++ bisection_solver.cpp -c -std=c++11 -O3
+$(TARGET): $(OBJS)
+	ar rc $(@) $(OBJS)
 
-arma_solver.o: arma_solver.hpp arma_solver.cpp
-	g++ arma_solver.cpp -c -std=c++11 -O3 ${ARMA_IMPORT}
+.cpp.o:
+	$(CXX) $(CXXFLAGS) -c $(<)
 
-simplex_solver.o: simplex_solver.hpp simplex_solver.cpp
-	g++ simplex_solver.cpp -c -std=c++11 -O3
-
-simplex.o: simplex.hpp simplex.cpp
-	g++ simplex.cpp -c -std=c++11 -O3
+clean:
+	$(RM) $(OBJS) $(TARGET)

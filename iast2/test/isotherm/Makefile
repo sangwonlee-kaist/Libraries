@@ -1,7 +1,7 @@
-ROOTPATH=~/libraries/iast2/
+all: libiast.a test.x
 
-test.x: ${ROOTPATH}isotherm.hpp test.cpp
-	g++ test.cpp -o test.x -std=c++11
+libiast.a:
+	cd ../../ && make
 
-clean:
-	rm test.x
+test.x: test.cpp ../../libiast.a
+	g++ test.cpp -o test.x -std=c++11 -L ../../ -l iast

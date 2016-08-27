@@ -1,4 +1,7 @@
-ROOTPATH=../../
+all: libiast.a test.x
 
-test.x: ${ROOTPATH}interpolator.hpp ${ROOTPATH}linear_interpolator.hpp test.cpp
-	g++ test.cpp -o test.x -std=c++11
+libiast.a:
+	cd ../../ && make
+
+test.x: test.cpp ../../libiast.a
+	g++ test.cpp -o test.x -std=c++11 -L ../../ -l iast
