@@ -6,9 +6,7 @@
 #include <tuple>
 
 #include "../../iast.hpp"
-#include "../../langmuir_isotherm.hpp"
-#include "../../lf_isotherm.hpp"
-#include "../../interpolator_isotherm.hpp"
+#include "../../isotherm_factory.hpp"
 
 using namespace std;
 
@@ -35,16 +33,17 @@ int
 main(int argc, char* argv[])
     {
     try {
+        IsothermFactory factory;
         Iast::IsothermVector isotherms;
         isotherms.resize(4);
 
-        isotherms[0] = make_shared<LangmuirIsotherm>(32.9301, 0.00924395); // n2
-        isotherms[1] = make_shared<LfIsotherm>(10.4655, 1.90362, 1.1976);  // co2
+        isotherms[0] = factory.create("langmuir", {32.9301, 0.00924395}); // n2
+        isotherms[1] = factory.create("lf", {10.4655, 1.90362, 1.1976});  // co2
 
         vector<double> x, y;
         readTwoColumn("h2o.dat", x, y);
-        isotherms[2] = make_shared<InterpolatorIsotherm>(x, y);            // h2o
-        isotherms[3] = make_shared<LangmuirIsotherm>(11.6083, 0.0220011);  // o2
+        isotherms[2] = factory.create("interpolator", {x, y});            // h2o
+        isotherms[3] = factory.create("langmuir", {11.6083, 0.0220011});  // o2
 
         for (const auto& iso : isotherms)
             cout << iso->getInfoString() << endl;
@@ -57,14 +56,27 @@ main(int argc, char* argv[])
         double uptake;
         vector<double> composition;
 
-        iast.calculate(Iast::Mode::FIX_PY, 1.0, gasComposition);
-        tie(uptake, composition) = iast.getResult();
+        try {
+            iast.calculate(Iast::Mode::FIX_PY, 1.0, gasComposition);
+            tie(uptake, composition) = iast.getResult();
+            }
+        catch (IastException& e)
+            {
+            cout << e.what() << endl;
+            }
 
         cout << "Uptake = " << uptake << endl;
         cout << "(";
         for (auto& comp : composition)
             cout << comp << ", ";
-        cout << ")";
+        cout << ")" << endl;
+
+        for (int i = 0; i < 4; ++i)
+            {
+            double p = gasComposition[i] / composition[i];
+
+            cout << isotherms[i]->spressure(p) << endl;
+            }
         }
     catch (IastException& e)
         {
