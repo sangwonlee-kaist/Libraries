@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cstddef>
 
+#include "isotherm_exception.hpp"
 #include "linear_interpolator.hpp"
 
 InterpolatorIsotherm::InterpolatorIsotherm(const std::vector<double>& x,
@@ -13,8 +14,17 @@ InterpolatorIsotherm::InterpolatorIsotherm(const std::vector<double>& x,
     mLoading {std::make_shared<LinearInterpolator>()},
     mSpressure {}
     {
-    //if (x.size() != y.size())
-    //    ;
+    if (x.empty() or y.empty())
+        {
+        const char* msg {"Data is empty"};
+        throw IsothermException {__FILE__, __LINE__, msg};
+        }
+
+    if (x.size() != y.size())
+        {
+        const char* msg {"x.size() != y.size()"};
+        throw IsothermException {__FILE__, __LINE__, msg};
+        }
 
     mLoading->setData(x, y);
 
@@ -28,7 +38,7 @@ InterpolatorIsotherm::InterpolatorIsotherm(const std::vector<double>& x,
         double a = (y[i] - y[i - 1]) / (x[i] - x[i - 1]);
         double b = -a * x[i] + y[i];
 
-        // integrate(y / x) = a * x + log(x) + C
+        // integrate(y / x) = a * x + b * log(x) + C
         mSpressure[i] = mSpressure[i - 1] +
             a * (x[i] - x[i - 1]) + b * std::log(x[i] / x[i - 1]);
         }
@@ -94,6 +104,12 @@ InterpolatorIsotherm::getInfoString() const
           mLoading->getYData().back() << ") ";
 
     return ss.str();
+    }
+
+Interpolator&
+InterpolatorIsotherm::getInterpolator()
+    {
+    return *mLoading;
     }
 
 void

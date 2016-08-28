@@ -11,6 +11,7 @@ public:
 
     virtual std::vector<double>& getXData() = 0;
     virtual std::vector<double>& getYData() = 0;
+
     virtual double at(double x) const = 0;
     // Operators.
     virtual double operator () (double x) const = 0;

@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "../../solver.hpp"
+#include "../../solver_factory.hpp"
 #include "../../bisection_solver.hpp"
 
 using namespace std;

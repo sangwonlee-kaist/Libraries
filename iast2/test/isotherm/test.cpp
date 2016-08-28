@@ -4,14 +4,16 @@
 #include "../../isotherm.hpp"
 #include "../../isotherm_factory.hpp"
 #include "../../isotherm_exception.hpp"
+#include "../../isotherm_utility.hpp"
 #include "../../interpolator_isotherm.hpp"
+#include "../../item_isotherm.hpp"
+using namespace std;
 
 int
 main(int argc, char* argv[])
-    {
-    using namespace std;
+try {
     IsothermFactory factory;
-    auto iso = factory.create("langmuir", {1.0, 1.0});
+    std::shared_ptr<Isotherm> iso = factory.create("langmuir", {1.0, 1.0});
 
     double p  = 5.5;
     double dp = 1.e-6;
@@ -70,5 +72,39 @@ main(int argc, char* argv[])
         cout << e.what() << endl;
         }
 
+    // Utility test.
+
+    double uptake = iso->loading(p);
+    cout << "Uptake = " << uptake << " at pressure = " << inverseIsotherm(*iso, uptake) << endl;
+
+    try {
+        inverseIsotherm(*iso, 100000.0);
+        }
+    catch (IsothermException& e)
+        {
+        cout << e.what() << endl;
+        }
+
+    // Item functionality.
+    {
+        shared_ptr<Isotherm> refiso = factory.create("langmuir", {1.0, 1.0});
+        function<double(double)> isoheat = [](double p){return 40.0;};
+        shared_ptr<Isotherm> itemiso = make_shared<ItemIsotherm>(refiso, isoheat, 298.0, 350.0);
+
+        cout << "6." << endl;
+        cout << itemiso->getInfoString() << endl;
+        cout << itemiso->loading(p) << " = ";
+        cout << (itemiso->spressure(p + dp) - itemiso->spressure(p)) / dp * p << endl;
+
+        cout << "ref count = " << refiso.use_count() << endl;
+        cout << "item count = " << itemiso.use_count() << endl;
+    }
+
+    cout << "Out of scope." << endl;
+
     return 0;
+    }
+catch (exception& e)
+    {
+    cout << e.what() << endl;
     }

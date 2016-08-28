@@ -18,6 +18,7 @@ public:
 
     virtual std::string getInfoString() const override;
 
+    Interpolator& getInterpolator();
     void pushBack(double p, double n);
 private:
     mutable std::shared_ptr<Interpolator> mLoading;

@@ -1,11 +1,14 @@
 #include "isotherm_factory.hpp"
 
+#include <functional>
+
 #include "isotherm_exception.hpp"
 #include "langmuir_isotherm.hpp"
 #include "lf_isotherm.hpp"
 #include "dsl_isotherm.hpp"
 #include "dslf_isotherm.hpp"
 #include "interpolator_isotherm.hpp"
+#include "item_isotherm.hpp"
 
 std::shared_ptr<Isotherm>
 IsothermFactory::create(const std::string& name, std::vector<Any> args) const
@@ -52,6 +55,15 @@ IsothermFactory::create(const std::string& name, std::vector<Any> args) const
             std::vector<double> y = args[1].getAs<std::vector<double>>();
 
             return std::make_shared<InterpolatorIsotherm>(x, y);
+            }
+        if (name == "item")
+            {
+            auto isotherm = args[0].getAs< std::shared_ptr<Isotherm> >();
+            auto isoheat = args[1].getAs< std::function<double(double)> >();
+            auto reftemp = args[2].getAs<double>();
+            auto tartemp = args[3].getAs<double>();
+
+            return std::make_shared<ItemIsotherm>(isotherm, isoheat, reftemp, tartemp);
             }
         else
             {
