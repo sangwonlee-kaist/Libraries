@@ -1,6 +1,7 @@
 #include "interpolator_isotherm.hpp"
 
 #include <cmath>
+#include <fstream>
 #include <sstream>
 #include <algorithm>
 #include <cstddef>
@@ -130,4 +131,29 @@ InterpolatorIsotherm::pushBack(double p, double n)
     // integrate(y / x) = a * x + log(x) + C
     mSpressure.push_back(mSpressure.back() +
         a * (x[i] - x[i - 1]) + b * std::log(x[i] / x[i - 1]));
+    }
+
+void readTwoColumns(const std::string filename,
+                    std::vector<double>& x,
+                    std::vector<double>& y)
+    {
+    std::ifstream ifs {filename};
+
+    if (not ifs)
+        throw IsothermException {__FILE__, __LINE__, "Invalid filename"};
+
+    x.clear();
+    y.clear();
+
+    while (ifs)
+        {
+        double xx;
+        double yy;
+
+        if (ifs >> xx >> yy)
+            {
+            x.push_back(xx);
+            y.push_back(yy);
+            }
+        }
     }

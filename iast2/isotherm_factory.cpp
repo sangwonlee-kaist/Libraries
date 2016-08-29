@@ -59,6 +59,7 @@ IsothermFactory::create(const std::string& name, std::vector<Any> args) const
         if (name == "item")
             {
             auto isotherm = args[0].getAs< std::shared_ptr<Isotherm> >();
+            Any {}.swap(args[0]); // Why?????????????????????????????????
             auto isoheat = args[1].getAs< std::function<double(double)> >();
             auto reftemp = args[2].getAs<double>();
             auto tartemp = args[3].getAs<double>();

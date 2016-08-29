@@ -2,7 +2,6 @@
 
 #include <sstream>
 #include <cmath>
-#include <iostream>
 
 #include "isotherm_exception.hpp"
 #include "isotherm_utility.hpp"
@@ -16,10 +15,9 @@ ItemIsotherm::ItemIsotherm(IsothermPtr isotherm,
         mIsoheat {isoheat},
         mRefTemperature {refTemperature},
         mTarTemperature {tarTemperature},
-        mIsotherm {{inverseIsotherm(*mRefIsotherm, 0.1)}, {0.1}}
+        mIsotherm {{newPressure(0.1)}, {0.1}}
         {
         // Body
-        std::cout << mRefIsotherm.use_count() << std::endl;
         }
     catch (IsothermException& e)
         {
@@ -28,6 +26,12 @@ ItemIsotherm::ItemIsotherm(IsothermPtr isotherm,
         msg += e.what();
         throw IsothermException {__FILE__, __LINE__, msg};
         }
+
+ItemIsotherm::~ItemIsotherm()
+    {
+    // Why????????????????????
+    // Why Explicit Define????
+    }
 
 double
 ItemIsotherm::loading(double p) const
@@ -62,18 +66,13 @@ void
 ItemIsotherm::expand(double p) const
     {
     try {
-        double R = 0.008314469;
-        double dbeta = (1.0 / mTarTemperature - 1.0 / mRefTemperature) / R;
-
         auto& xdata = mIsotherm.getInterpolator().getXData();
         auto& ydata = mIsotherm.getInterpolator().getYData();
 
         if (xdata.empty())
             {
             double newn = 0.1;
-            double newp = inverseIsotherm(*mRefIsotherm, newn);
-
-            double tarp = newp * std::exp(-dbeta * mIsoheat(newn));
+            double tarp = newPressure(0.1);
 
             mIsotherm.pushBack(tarp, newn);
             }
@@ -81,9 +80,7 @@ ItemIsotherm::expand(double p) const
         while (p > xdata.back())
             {
             double newn = ydata.back() + 0.1;
-            double newp = inverseIsotherm(*mRefIsotherm, newn);
-
-            double tarp = newp * std::exp(-dbeta * mIsoheat(newn));
+            double tarp = newPressure(newn);
 
             mIsotherm.pushBack(tarp, newn);
             }
@@ -95,4 +92,15 @@ ItemIsotherm::expand(double p) const
         msg += e.what();
         throw IsothermException {__FILE__, __LINE__, msg};
         }
+    }
+
+double
+ItemIsotherm::newPressure(double n) const
+    {
+    double R = 0.008314469;
+    double dbeta = (1.0 / mTarTemperature - 1.0 / mRefTemperature) / R;
+
+    double p = inverseIsotherm(*mRefIsotherm, n) * std::exp(-dbeta * mIsoheat(n));
+
+    return p;
     }
