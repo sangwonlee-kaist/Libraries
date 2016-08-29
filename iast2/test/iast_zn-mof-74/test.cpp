@@ -7,6 +7,7 @@
 
 #include "../../iast.hpp"
 #include "../../isotherm_factory.hpp"
+#include "../../interpolator_isotherm.hpp"
 
 using namespace std;
 
@@ -41,7 +42,7 @@ main(int argc, char* argv[])
         isotherms[1] = factory.create("lf", {10.4655, 1.90362, 1.1976});  // co2
 
         vector<double> x, y;
-        readTwoColumn("h2o.dat", x, y);
+        readTwoColumns("h2o.dat", x, y);
         isotherms[2] = factory.create("interpolator", {x, y});            // h2o
         isotherms[3] = factory.create("langmuir", {11.6083, 0.0220011});  // o2
 

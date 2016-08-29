@@ -17,7 +17,7 @@ public:
                  double refTemperature,
                  double tarTemperature);
 
-    virtual ~ItemIsotherm() = default;
+    virtual ~ItemIsotherm();
 
     virtual double loading(double p) const override;
     virtual double spressure(double p) const override;
@@ -32,4 +32,5 @@ private:
     mutable InterpolatorIsotherm mIsotherm;
 
     void expand(double p) const;
+    double newPressure(double n) const;
     };

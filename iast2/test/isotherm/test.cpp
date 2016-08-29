@@ -6,7 +6,6 @@
 #include "../../isotherm_exception.hpp"
 #include "../../isotherm_utility.hpp"
 #include "../../interpolator_isotherm.hpp"
-#include "../../item_isotherm.hpp"
 using namespace std;
 
 int
@@ -89,18 +88,13 @@ try {
     {
         shared_ptr<Isotherm> refiso = factory.create("langmuir", {1.0, 1.0});
         function<double(double)> isoheat = [](double p){return 40.0;};
-        shared_ptr<Isotherm> itemiso = make_shared<ItemIsotherm>(refiso, isoheat, 298.0, 350.0);
+        iso = factory.create("item", {refiso, isoheat, 298.0, 350.0});
 
         cout << "6." << endl;
-        cout << itemiso->getInfoString() << endl;
-        cout << itemiso->loading(p) << " = ";
-        cout << (itemiso->spressure(p + dp) - itemiso->spressure(p)) / dp * p << endl;
-
-        cout << "ref count = " << refiso.use_count() << endl;
-        cout << "item count = " << itemiso.use_count() << endl;
+        cout << iso->getInfoString() << endl;
+        cout << iso->loading(p) << " = ";
+        cout << (iso->spressure(p + dp) - iso->spressure(p)) / dp * p << endl;
     }
-
-    cout << "Out of scope." << endl;
 
     return 0;
     }
