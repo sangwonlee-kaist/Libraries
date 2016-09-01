@@ -6,6 +6,7 @@
 #include "../../isotherm_exception.hpp"
 #include "../../isotherm_utility.hpp"
 #include "../../interpolator_isotherm.hpp"
+#include "../../bet_isotherm.hpp"
 using namespace std;
 
 int
@@ -95,6 +96,27 @@ try {
         cout << iso->loading(p) << " = ";
         cout << (iso->spressure(p + dp) - iso->spressure(p)) / dp * p << endl;
     }
+
+    iso = factory.create("bet", {1.0, 2.0, 3.0});
+
+    cout << "7." << endl;
+    cout << iso->getInfoString() << endl;
+    cout << iso->loading(p) << " = ";
+    cout << (iso->spressure(p + dp) - iso->spressure(p)) / dp * p << endl;
+
+    iso = factory.create("henry", {2.0});
+
+    cout << "8." << endl;
+    cout << iso->getInfoString() << endl;
+    cout << iso->loading(p) << " = ";
+    cout << (iso->spressure(p + dp) - iso->spressure(p)) / dp * p << endl;
+
+    iso = factory.create("quadratic", {1.0, 2.0, 3.0});
+
+    cout << "9." << endl;
+    cout << iso->getInfoString() << endl;
+    cout << iso->loading(p) << " = ";
+    cout << (iso->spressure(p + dp) - iso->spressure(p)) / dp * p << endl;
 
     return 0;
     }

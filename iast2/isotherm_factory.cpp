@@ -7,6 +7,9 @@
 #include "lf_isotherm.hpp"
 #include "dsl_isotherm.hpp"
 #include "dslf_isotherm.hpp"
+#include "bet_isotherm.hpp"
+#include "quadratic_isotherm.hpp"
+#include "henry_isotherm.hpp"
 #include "interpolator_isotherm.hpp"
 #include "item_isotherm.hpp"
 
@@ -48,6 +51,28 @@ IsothermFactory::create(const std::string& name, std::vector<Any> args) const
             double n2 = args[5].getAs<double>();
 
             return std::make_shared<DslfIsotherm>(q1, k1, n1, q2, k2, n2);
+            }
+        if (name == "bet")
+            {
+            double q = args[0].getAs<double>();
+            double k1 = args[1].getAs<double>();
+            double k2 = args[2].getAs<double>();
+
+            return std::make_shared<BetIsotherm>(q, k1, k2);
+            }
+        if (name == "quadratic")
+            {
+            double q = args[0].getAs<double>();
+            double k1 = args[1].getAs<double>();
+            double k2 = args[2].getAs<double>();
+
+            return std::make_shared<QuadraticIsotherm>(q, k1, k2);
+            }
+        if (name == "henry")
+            {
+            double k = args[0].getAs<double>();
+
+            return std::make_shared<HenryIsotherm>(k);
             }
         if (name == "interpolator")
             {

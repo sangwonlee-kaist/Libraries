@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "../../isotherm_factory.hpp"
-#include "../../interpolator_isotherm.hpp"
+#include "../../isotherm_utility.hpp"
 #include "../../linear_interpolator.hpp"
 
 using namespace std;
@@ -14,7 +14,7 @@ main(int, char* [])
     vector<double> x;
     vector<double> y;
 
-    readTwoColumns("Q.dat", x, y);
+    ::readTwoColumns("Q.dat", x, y);
     LinearInterpolator q;
     q.setData(x, y);
 
@@ -22,7 +22,7 @@ main(int, char* [])
 
     IsothermFactory factory;
 
-    readTwoColumns("n.dat", x, y);
+    ::readTwoColumns("n.dat", x, y);
     auto n = factory.create("interpolator", {x, y});
 
     auto iso = factory.create("item", {n, isoheat, 293.0, 303.0});

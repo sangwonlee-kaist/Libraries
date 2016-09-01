@@ -25,7 +25,3 @@ private:
     mutable std::shared_ptr<Interpolator> mLoading;
     std::vector<double> mSpressure;
     };
-
-void readTwoColumns(const std::string filename,
-                    std::vector<double>& x,
-                    std::vector<double>& y);
