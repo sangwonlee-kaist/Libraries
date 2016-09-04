@@ -71,8 +71,10 @@ Iast::modeFixPy(ValueType p, std::vector<ValueType> y)
         functions.push_back([this, i, p, y, pivot](const Solver::PointType& x)
             {
             int j = pivot;
-            return mIsotherms[i]->spressure(p * y[i] / x[i]) /
-                   mIsotherms[j]->spressure(p * y[j] / x[j]) - 1.0;
+            //return mIsotherms[i]->spressure(p * y[i] / x[i]) /
+            //       mIsotherms[j]->spressure(p * y[j] / x[j]) - 1.0;
+            return mIsotherms[i]->spressure(p * y[i] / x[i]) -
+                   mIsotherms[j]->spressure(p * y[j] / x[j]);
             });
         }
 
@@ -81,7 +83,12 @@ Iast::modeFixPy(ValueType p, std::vector<ValueType> y)
         double sum = 0.0;
 
         for (const auto& e : x)
+            {
+            if (e < 0.0)
+                return 1.0e30;
+
             sum += e;
+            }
 
         return sum - 1.0;
         });
@@ -141,8 +148,10 @@ Iast::modeFixPx(ValueType p, std::vector<ValueType> x)
         functions.push_back([this, i, p, x, pivot](const Solver::PointType& y)
             {
             int j = pivot;
-            return mIsotherms[i]->spressure(p * y[i] / x[i]) /
-                   mIsotherms[j]->spressure(p * y[j] / x[j]) - 1.0;
+            //return mIsotherms[i]->spressure(p * y[i] / x[i]) /
+            //       mIsotherms[j]->spressure(p * y[j] / x[j]) - 1.0;
+            return mIsotherms[i]->spressure(p * y[i] / x[i]) -
+                   mIsotherms[j]->spressure(p * y[j] / x[j]);
             });
         }
 
@@ -151,7 +160,12 @@ Iast::modeFixPx(ValueType p, std::vector<ValueType> x)
         double sum = 0.0;
 
         for (const auto& e : y)
+            {
+            if (e < 0.0)
+                return 1.0e30;
+
             sum += e;
+            }
 
         return sum - 1.0;
         });

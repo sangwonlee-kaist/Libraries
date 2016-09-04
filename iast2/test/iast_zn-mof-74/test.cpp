@@ -6,45 +6,30 @@
 #include <tuple>
 
 #include "../../iast.hpp"
-#include "../../isotherm_factory.hpp"
-#include "../../interpolator_isotherm.hpp"
+//#include "../../isotherm_factory.hpp"
+//#include "../../interpolator_isotherm.hpp"
+
+#include "../../isotherm_utility.hpp"
 
 using namespace std;
-
-void readTwoColumn(string name, vector<double>& x, vector<double>& y)
-    {
-    ifstream ifs {name};
-
-    x.clear();
-    y.clear();
-
-    while (ifs)
-        {
-        double xx, yy;
-
-        if (ifs >> xx >> yy)
-            {
-            x.push_back(xx);
-            y.push_back(yy);
-            }
-        }
-    }
 
 int
 main(int argc, char* argv[])
     {
     try {
-        IsothermFactory factory;
+        IsothermModeler modeler;
         Iast::IsothermVector isotherms;
         isotherms.resize(4);
 
-        isotherms[0] = factory.create("langmuir", {32.9301, 0.00924395}); // n2
-        isotherms[1] = factory.create("lf", {10.4655, 1.90362, 1.1976});  // co2
-
         vector<double> x, y;
-        readTwoColumns("h2o.dat", x, y);
-        isotherms[2] = factory.create("interpolator", {x, y});            // h2o
-        isotherms[3] = factory.create("langmuir", {11.6083, 0.0220011});  // o2
+        ::readTwoColumns("n2.dat", x, y);
+        isotherms[0] = modeler.autofit(x, y); // n2
+        ::readTwoColumns("co2.dat", x, y);
+        isotherms[1] = modeler.autofit(x, y); // co2
+        ::readTwoColumns("h2o.dat", x, y);
+        isotherms[2] = modeler.autofit(x, y); // h2o
+        ::readTwoColumns("o2.dat", x, y);
+        isotherms[3] = modeler.autofit(x, y); // o2
 
         for (const auto& iso : isotherms)
             cout << iso->getInfoString() << endl;
@@ -52,31 +37,37 @@ main(int argc, char* argv[])
         Iast iast;
         iast.setIsotherms(isotherms);
 
-        vector<double> gasComposition {0.799, 0.15, 0.001, 0.05};
+        vector<double> gasComposition {0.840, 0.140, 0.015, 0.005};
 
-        double uptake;
-        vector<double> composition;
-
-        try {
-            iast.calculate(Iast::Mode::FIX_PY, 1.0, gasComposition);
-            tie(uptake, composition) = iast.getResult();
-            }
-        catch (IastException& e)
+        constexpr double tiny = 1.0e-10;
+        for (double p = 0.1; p < 20.0 + tiny; p += 0.1)
             {
-            cout << e.what() << endl;
-            }
+            double uptake;
+            vector<double> composition;
 
-        cout << "Uptake = " << uptake << endl;
-        cout << "(";
-        for (auto& comp : composition)
-            cout << comp << ", ";
-        cout << ")" << endl;
+            try {
+                iast.calculate(Iast::Mode::FIX_PY, p, gasComposition);
+                tie(uptake, composition) = iast.getResult();
+                }
+            catch (IastException& e)
+                {
+                cerr << e.what() << endl;
+                continue;
+                }
 
-        for (int i = 0; i < 4; ++i)
-            {
-            double p = gasComposition[i] / composition[i];
+            cout << p << "    ";
+            cout << uptake << "    ";
 
-            cout << isotherms[i]->spressure(p) << endl;
+            for (auto& comp : composition)
+                cout << comp << "    ";
+
+            for (int i = 0; i < 4; ++i)
+                {
+                double pp = gasComposition[i] / composition[i] * p;
+
+                cout << isotherms[i]->spressure(pp) << "    ";
+                }
+            cout << endl;
             }
         }
     catch (IastException& e)
