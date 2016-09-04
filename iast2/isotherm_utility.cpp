@@ -197,6 +197,7 @@ IsothermModeler::autofit(const std::vector<double>& x,
     {
     std::vector< std::shared_ptr<Isotherm> > isotherms;
     std::vector<double> errors;
+    std::vector<double> rsquares;
 
     for (auto& info : mIsothermMap)
         {
@@ -205,12 +206,25 @@ IsothermModeler::autofit(const std::vector<double>& x,
 
         isotherms.push_back(this->fit(isoname, x, y));
         errors.push_back(this->getError() * dimfactor);
+        rsquares.push_back(this->getRSquare());
         }
 
     int index = std::min_element(errors.begin(), errors.end()) - errors.begin();
 
-    mError = errors[index];
-    return isotherms[index];
+    if (getRSquare() < 0.99)
+        {
+        // Interpolator is the best.
+        mRSquare = 0.0;
+        mError = 0.0;
+        std::vector<Any> args {x, y};
+        return IsothermFactory {}.create("interpolator", args);
+        }
+    else
+        {
+        mRSquare = rsquares[index];
+        mError = errors[index];
+        return isotherms[index];
+        }
     }
 
 double
