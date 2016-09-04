@@ -122,7 +122,7 @@ IsothermModeler::fit(const std::string& isoname,
     auto obj = [&isoname, &factory, &numParams, &x, &y](const Minimizer::PointType& p)
         {
         for (auto pi : p)
-            if (pi < 1.0e-4)
+            if (pi < 1.0e-3 or pi > 1.0e3)
                 return 1.0e30;
 
         std::vector<Any> params (numParams);
