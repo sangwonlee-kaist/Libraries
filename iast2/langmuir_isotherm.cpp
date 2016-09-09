@@ -31,3 +31,13 @@ LangmuirIsotherm::getInfoString() const
 
     return ss.str();
     }
+
+Isotherm::ParameterType
+LangmuirIsotherm::getParameters() const
+    {
+    ParameterType params;
+    params["q"] = mQ;
+    params["k"] = mK;
+
+    return params;
+    } 

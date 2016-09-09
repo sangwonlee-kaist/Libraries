@@ -62,6 +62,17 @@ ItemIsotherm::getInfoString() const
     return ss.str();
     }
 
+Isotherm::ParameterType
+ItemIsotherm::getParameters() const
+    {
+    ParameterType params;
+
+    params["ref"] = mRefTemperature;
+    params["tar"] = mTarTemperature;
+
+    return params;
+    }
+
 void
 ItemIsotherm::expand(double p) const
     {

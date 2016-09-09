@@ -12,6 +12,7 @@ public:
     virtual double spressure(double P) const override;
 
     virtual std::string getInfoString() const override;
+    virtual ParameterType getParameters() const override;
 private:
     double mQ;
     double mK;

@@ -33,3 +33,16 @@ LfIsotherm::getInfoString() const
 
     return ss.str();
     }
+
+
+Isotherm::ParameterType
+LfIsotherm::getParameters() const
+    {
+    ParameterType params;
+
+    params["q"] = mQ;
+    params["k"] = mK;
+    params["n"] = mN;
+
+    return params;
+    }

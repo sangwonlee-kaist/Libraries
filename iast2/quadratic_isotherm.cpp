@@ -34,3 +34,14 @@ QuadraticIsotherm::getInfoString() const
     return ss.str();
     }
 
+Isotherm::ParameterType
+QuadraticIsotherm::getParameters() const
+    {
+    ParameterType params;
+
+    params["q"] = q;
+    params["k1"] = k1;
+    params["k2"] = k2;
+
+    return params;
+    } 

@@ -35,3 +35,16 @@ DslIsotherm::getInfoString() const
 
     return ss.str();
     }
+
+Isotherm::ParameterType
+DslIsotherm::getParameters() const
+    {
+    ParameterType paramss;
+
+    paramss["q1"] = params[0];
+    paramss["k1"] = params[1];
+    paramss["q2"] = params[2];
+    paramss["k2"] = params[3];
+
+    return paramss;
+    }

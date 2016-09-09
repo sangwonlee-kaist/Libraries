@@ -39,3 +39,18 @@ DslfIsotherm::getInfoString() const
 
     return ss.str();
     }
+
+Isotherm::ParameterType
+DslfIsotherm::getParameters() const
+    {
+    ParameterType paramss;
+
+    paramss["q1"] = params[0];
+    paramss["k1"] = params[1];
+    paramss["n1"] = params[2];
+    paramss["q2"] = params[3];
+    paramss["k2"] = params[4];
+    paramss["n2"] = params[5];
+
+    return paramss;
+    }

@@ -118,6 +118,9 @@ try {
     cout << iso->loading(p) << " = ";
     cout << (iso->spressure(p + dp) - iso->spressure(p)) / dp * p << endl;
 
+    for (auto& m : iso->getParameters())
+        cout << m.first << "   " << m.second << endl;
+
     return 0;
     }
 catch (exception& e)

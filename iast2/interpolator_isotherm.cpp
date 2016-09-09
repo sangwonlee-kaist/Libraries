@@ -107,6 +107,15 @@ InterpolatorIsotherm::getInfoString() const
     return ss.str();
     }
 
+Isotherm::ParameterType
+InterpolatorIsotherm::getParameters() const
+    {
+    ParameterType params;
+    params["none"] = 0.0;
+
+    return params;
+    }
+
 Interpolator&
 InterpolatorIsotherm::getInterpolator()
     {

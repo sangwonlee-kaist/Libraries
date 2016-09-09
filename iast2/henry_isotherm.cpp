@@ -31,3 +31,12 @@ HenryIsotherm::getInfoString() const
 
     return ss.str();
     }
+
+Isotherm::ParameterType
+HenryIsotherm::getParameters() const
+    {
+    ParameterType params;
+    params["k"] = mK;
+
+    return params;
+    }

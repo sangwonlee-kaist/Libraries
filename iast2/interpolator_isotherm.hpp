@@ -18,6 +18,7 @@ public:
     virtual double spressure(double P) const override;
 
     virtual std::string getInfoString() const override;
+    virtual ParameterType getParameters() const override;
 
     Interpolator& getInterpolator();
     void pushBack(double p, double n);
