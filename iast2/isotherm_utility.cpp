@@ -26,15 +26,23 @@ readTwoColumns(const std::string& filename,
     if (not ifs)
         throw IsothermException {__FILE__, __LINE__, "Invalid filename"};
 
+    readTwoColumns(ifs, x, y);
+    }
+
+void
+readTwoColumns(std::istream& is,
+               std::vector<double>& x,
+               std::vector<double>& y)
+    {
     x.clear();
     y.clear();
 
-    while (ifs)
+    while (is)
         {
         double xx;
         double yy;
 
-        if (ifs >> xx >> yy)
+        if (is >> xx >> yy)
             {
             x.push_back(xx);
             y.push_back(yy);

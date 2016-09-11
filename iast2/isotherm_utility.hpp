@@ -1,5 +1,6 @@
 #pragma once
 
+#include <istream>
 #include <vector>
 #include <string>
 #include <tuple>
@@ -9,6 +10,10 @@
 #include "isotherm.hpp"
 
 void readTwoColumns(const std::string& filename,
+                    std::vector<double>& x,
+                    std::vector<double>& y);
+
+void readTwoColumns(std::istream& is,
                     std::vector<double>& x,
                     std::vector<double>& y);
 
