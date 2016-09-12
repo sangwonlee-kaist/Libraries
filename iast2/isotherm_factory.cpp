@@ -1,6 +1,7 @@
 #include "isotherm_factory.hpp"
 
 #include <functional>
+#include <stdexcept>
 
 #include "isotherm_exception.hpp"
 #include "langmuir_isotherm.hpp"
@@ -13,6 +14,21 @@
 #include "interpolator_isotherm.hpp"
 #include "item_isotherm.hpp"
 
+#include "isotherm_utility.hpp"
+
+IsothermFactory::IsothermFactory()
+    {
+    mIsoMap["langmuir"]     = 2;
+    mIsoMap["lf"]           = 3;
+    mIsoMap["dsl"]          = 4;
+    mIsoMap["dslf"]         = 6;
+    mIsoMap["bet"]          = 3;
+    mIsoMap["quadratic"]    = 3;
+    mIsoMap["henry"]        = 1;
+    mIsoMap["interpolator"] = 2;
+    mIsoMap["item"]         = 4;
+    }
+
 std::shared_ptr<Isotherm>
 IsothermFactory::create(const std::string& name, std::vector<Any> args) const
     {
@@ -24,7 +40,7 @@ IsothermFactory::create(const std::string& name, std::vector<Any> args) const
 
             return std::make_shared<LangmuirIsotherm>(q1, k1);
             }
-        if (name == "lf")
+        else if(name == "lf")
             {
             double q1 = args[0].getAs<double>();
             double k1 = args[1].getAs<double>();
@@ -32,7 +48,7 @@ IsothermFactory::create(const std::string& name, std::vector<Any> args) const
 
             return std::make_shared<LfIsotherm>(q1, k1, n1);
             }
-        if (name == "dsl")
+        else if (name == "dsl")
             {
             double q1 = args[0].getAs<double>();
             double k1 = args[1].getAs<double>();
@@ -41,7 +57,7 @@ IsothermFactory::create(const std::string& name, std::vector<Any> args) const
 
             return std::make_shared<DslIsotherm>(q1, k1, q2, k2);
             }
-        if (name == "dslf")
+        else if (name == "dslf")
             {
             double q1 = args[0].getAs<double>();
             double k1 = args[1].getAs<double>();
@@ -52,7 +68,7 @@ IsothermFactory::create(const std::string& name, std::vector<Any> args) const
 
             return std::make_shared<DslfIsotherm>(q1, k1, n1, q2, k2, n2);
             }
-        if (name == "bet")
+        else if (name == "bet")
             {
             double q = args[0].getAs<double>();
             double k1 = args[1].getAs<double>();
@@ -60,7 +76,7 @@ IsothermFactory::create(const std::string& name, std::vector<Any> args) const
 
             return std::make_shared<BetIsotherm>(q, k1, k2);
             }
-        if (name == "quadratic")
+        else if (name == "quadratic")
             {
             double q = args[0].getAs<double>();
             double k1 = args[1].getAs<double>();
@@ -68,20 +84,20 @@ IsothermFactory::create(const std::string& name, std::vector<Any> args) const
 
             return std::make_shared<QuadraticIsotherm>(q, k1, k2);
             }
-        if (name == "henry")
+        else if (name == "henry")
             {
             double k = args[0].getAs<double>();
 
             return std::make_shared<HenryIsotherm>(k);
             }
-        if (name == "interpolator")
+        else if (name == "interpolator")
             {
             std::vector<double> x = args[0].getAs<std::vector<double>>();
             std::vector<double> y = args[1].getAs<std::vector<double>>();
 
             return std::make_shared<InterpolatorIsotherm>(x, y);
             }
-        if (name == "item")
+        else if (name == "item")
             {
             auto isotherm = args[0].getAs< std::shared_ptr<Isotherm> >();
             Any {}.swap(args[0]); // Why?????????????????????????????????
@@ -100,4 +116,127 @@ IsothermFactory::create(const std::string& name, std::vector<Any> args) const
         {
         throw IsothermException {__FILE__, __LINE__, "Invalid arguments type for " + name};
         }
+    }
+
+std::shared_ptr<Isotherm>
+IsothermFactory::create(const std::string& isofile) const
+    {
+    std::ifstream ifs {isofile};
+
+    if (not ifs.good())
+        {
+        std::string msg = "File " + isofile + "does not exist.";
+        throw IsothermException {__FILE__, __LINE__, msg};
+        }
+
+    std::string isoname;
+
+    ifs >> isoname;
+
+    if (isoname == "interpolator")
+        {
+        std::string buffer;
+        std::getline(ifs, buffer); // Remove \n.
+
+        std::vector<double> x;
+        std::vector<double> y;
+
+        ::readTwoColumns(ifs, x, y);
+
+        if (x.size() == 0 or y.size() == 0)
+            {
+            std::string msg = "No data in " + isofile;
+            throw IsothermException {__FILE__, __LINE__, msg};
+            }
+
+        return std::make_shared<InterpolatorIsotherm>(x, y);
+        }
+
+    auto name = isoname;
+    // Map with .at() to throw exception.
+    try {
+        auto para = readParameterMap(ifs);
+
+        if (name == "langmuir")
+            {
+            double q = para.at("q");
+            double k = para.at("k");
+
+            return std::make_shared<LangmuirIsotherm>(q, k);
+            }
+        else if (name == "lf")
+            {
+            double q = para.at("q");
+            double k = para.at("k");
+            double n = para.at("n");
+
+            return std::make_shared<LfIsotherm>(q, k, n);
+            }
+        else if (name == "dsl")
+            {
+            double q1 = para.at("q1");
+            double k1 = para.at("k1");
+            double q2 = para.at("q2");
+            double k2 = para.at("k2");
+
+            return std::make_shared<DslIsotherm>(q1, k1, q2, k2);
+            }
+        else if (name == "dslf")
+            {
+            double q1 = para.at("q1");
+            double k1 = para.at("k1");
+            double n1 = para.at("n1");
+            double q2 = para.at("q2");
+            double k2 = para.at("k2");
+            double n2 = para.at("n2");
+
+            return std::make_shared<DslfIsotherm>(q1, k1, n1, q2, k2, n2);
+            }
+        else if (name == "bet")
+            {
+            double q = para.at("q");
+            double k1 = para.at("k1");
+            double k2 = para.at("k2");
+
+            return std::make_shared<BetIsotherm>(q, k1, k2);
+            }
+        else if (name == "quadratic")
+            {
+            double q = para.at("q");
+            double k1 = para.at("k1");
+            double k2 = para.at("k2");
+
+            return std::make_shared<QuadraticIsotherm>(q, k1, k2);
+            }
+        else if (name == "henry")
+            {
+            double k = para.at("k");
+
+            return std::make_shared<HenryIsotherm>(k);
+            }
+        else
+            {
+            throw IsothermException {__FILE__, __LINE__, name + ": Unsupported isotherm."};
+            }
+        }
+    catch (const std::out_of_range& e)
+        {
+        std::string msg = "Invalid .iso syntax in " + isofile;
+
+        throw IsothermException {__FILE__, __LINE__, msg};
+        }
+    }
+
+IsothermFactory::ParameterType
+IsothermFactory::readParameterMap(std::ifstream& ifs) const
+    {
+    std::string buffer;
+    double dummy;
+
+    ParameterType paramMap;
+
+    while (ifs >> buffer >> dummy)
+        paramMap[buffer] = dummy;
+
+    return paramMap;
     }
