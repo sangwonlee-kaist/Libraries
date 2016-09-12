@@ -27,9 +27,9 @@ std::string
 LfIsotherm::getInfoString() const
     {
     std::stringstream ss;
-
-    ss << "[Langmuir Freundlich Isotherm]\n";
-    ss << "[Parameters] q = " << mQ << ", k = " << mK << ", n = " << mN;
+    ss << "lf" << endl;
+    for (const auto& e : getParameters())
+        cout << e.first << "  " << e.second << endl;
 
     return ss.str();
     }

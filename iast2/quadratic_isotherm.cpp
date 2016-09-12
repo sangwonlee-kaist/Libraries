@@ -28,8 +28,9 @@ std::string
 QuadraticIsotherm::getInfoString() const
     {
     std::stringstream ss;
-    ss << "[Quadratic Isotherm]\n" <<
-          "[Parameters] q = " << q << ", k1 = " << k1 << ", k2 = " << k2;
+    ss << "quadratic" << endl;
+    for (const auto& e : getParameters())
+        cout << e.first << "  " << e.second << endl;
 
     return ss.str();
     }

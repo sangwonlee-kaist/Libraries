@@ -25,13 +25,9 @@ std::string
 DslIsotherm::getInfoString() const
     {
     std::stringstream ss;
-
-    ss << "[Dual Site Langmuir Isotherm]\n";
-    ss << "[Parameters] " <<
-          "q1 = " << params[0] << ", " <<
-          "k1 = " << params[1] << ", " <<
-          "q2 = " << params[2] << ", " <<
-          "k2 = " << params[3];
+    ss << "dsl" << endl;
+    for (const auto& e : getParameters())
+        cout << e.first << "  " << e.second << endl;
 
     return ss.str();
     }

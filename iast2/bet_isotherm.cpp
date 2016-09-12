@@ -28,8 +28,9 @@ std::string
 BetIsotherm::getInfoString() const
     {
     std::stringstream ss;
-    ss << "[BET Isotherm]\n" <<
-          "[Parameters] q = " << q << ", k1 = " << k1 << ", k2 = " << k2;
+    ss << "bet" << endl;
+    for (const auto& e : getParameters())
+        cout << e.first << "  " << e.second << endl;
 
     return ss.str();
     }

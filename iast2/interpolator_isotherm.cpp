@@ -96,13 +96,11 @@ InterpolatorIsotherm::getInfoString() const
     {
     std::stringstream ss;
 
-    ss << "[Interpolator Isotherm]\n";
-    ss << "[Parameters] front (x, y) = (" <<
-          mLoading->getXData().front() << ", " <<
-          mLoading->getYData().front() << ") " <<
-          ", back (x, y) = (" <<
-          mLoading->getXData().back() << ", " <<
-          mLoading->getYData().back() << ") ";
+    const auto& xdata = mLoading->getXData();
+    const auto& ydata = mLoading->getYData();
+    ss << "interpolator" << endl;
+    for (int i = 0; i < xdata.size(); ++i)
+        ss << xdata[i] << "    " << ydata[i] << endl;
 
     return ss.str();
     }

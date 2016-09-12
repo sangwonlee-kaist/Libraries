@@ -25,9 +25,9 @@ std::string
 HenryIsotherm::getInfoString() const
     {
     std::stringstream ss;
-
-    ss << "[Henry Isotherm]\n";
-    ss << "[Parameters] k = " << mK;
+    ss << "henry" << endl;
+    for (const auto& e : getParameters())
+        cout << e.first << "  " << e.second << endl;
 
     return ss.str();
     }

@@ -124,7 +124,7 @@ Iast::modeFixPy(ValueType p, std::vector<ValueType> y)
         totalUptake += x[i] / mIsotherms[i]->loading(p * y[i] / x[i]);
     totalUptake = 1.0 / totalUptake;
 
-    mResult = {totalUptake, x};
+    mResult = ResultType {totalUptake, x};
     }
 
 void
@@ -201,7 +201,7 @@ Iast::modeFixPx(ValueType p, std::vector<ValueType> x)
         totalUptake += x[i] / mIsotherms[i]->loading(p * y[i] / x[i]);
     totalUptake = 1.0 / totalUptake;
 
-    mResult = {totalUptake, y};
+    mResult = ResultType {totalUptake, y};
     }
 
 void
@@ -210,8 +210,8 @@ Iast::modeFixNx(ValueType n, std::vector<ValueType> x)
     n = 0.0;
     x = {n};
     x = x;
+
     throw IastException {__FILE__, __LINE__, "Unsupported mode now."};
-    mResult = {3.0, {3.0}};
     }
 
 Iast::ResultType
