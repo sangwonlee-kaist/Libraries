@@ -25,9 +25,9 @@ std::string
 HenryIsotherm::getInfoString() const
     {
     std::stringstream ss;
-    ss << "henry" << endl;
+    ss << "henry" << '\n';
     for (const auto& e : getParameters())
-        cout << e.first << "  " << e.second << endl;
+        ss << e.first << "  " << e.second << '\n';
 
     return ss.str();
     }

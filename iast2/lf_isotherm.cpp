@@ -27,9 +27,9 @@ std::string
 LfIsotherm::getInfoString() const
     {
     std::stringstream ss;
-    ss << "lf" << endl;
+    ss << "lf" << '\n';
     for (const auto& e : getParameters())
-        cout << e.first << "  " << e.second << endl;
+        ss << e.first << "  " << e.second << '\n';
 
     return ss.str();
     }

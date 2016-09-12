@@ -25,9 +25,9 @@ std::string
 DslIsotherm::getInfoString() const
     {
     std::stringstream ss;
-    ss << "dsl" << endl;
+    ss << "dsl" << '\n';
     for (const auto& e : getParameters())
-        cout << e.first << "  " << e.second << endl;
+        ss << e.first << "  " << e.second << '\n';
 
     return ss.str();
     }

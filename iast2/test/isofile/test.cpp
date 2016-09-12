@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <memory>
+#include <fstream>
 #include "../../isotherm.hpp"
 #include "../../isotherm_factory.hpp"
 #include "../../isotherm_exception.hpp"
@@ -53,6 +54,17 @@ try {
 
     iso = factory.create("dsl2.iso");
     cout << "8." << endl;
+    cout << iso->getInfoString() << endl;
+
+    auto info = iso->getInfoString();
+
+    ofstream ofs {"outtest.iso"};
+    ofs << info;
+    ofs.close();
+
+    iso = factory.create("outtest.iso");
+
+    cout << "9." << endl;
     cout << iso->getInfoString() << endl;
 
     return 0;

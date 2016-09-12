@@ -25,9 +25,9 @@ std::string
 LangmuirIsotherm::getInfoString() const
     {
     std::stringstream ss;
-    ss << "langmuir" << endl;
+    ss << "langmuir" << '\n';
     for (const auto& e : getParameters())
-        cout << e.first << "  " << e.second << endl;
+        ss << e.first << "  " << e.second << '\n';
 
     return ss.str();
     }

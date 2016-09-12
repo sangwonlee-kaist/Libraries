@@ -27,9 +27,9 @@ std::string
 DslfIsotherm::getInfoString() const
     {
     std::stringstream ss;
-    ss << "dslf" << endl;
+    ss << "dslf" << '\n';
     for (const auto& e : getParameters())
-        cout << e.first << "  " << e.second << endl;
+        ss << e.first << "  " << e.second << '\n';
 
     return ss.str();
     }

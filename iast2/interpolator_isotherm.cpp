@@ -98,9 +98,10 @@ InterpolatorIsotherm::getInfoString() const
 
     const auto& xdata = mLoading->getXData();
     const auto& ydata = mLoading->getYData();
-    ss << "interpolator" << endl;
-    for (int i = 0; i < xdata.size(); ++i)
-        ss << xdata[i] << "    " << ydata[i] << endl;
+    int size = xdata.size();
+    ss << "interpolator" << '\n';
+    for (int i = 0; i < size; ++i)
+        ss << xdata[i] << "    " << ydata[i] << '\n';
 
     return ss.str();
     }
