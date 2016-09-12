@@ -219,7 +219,8 @@ IsothermModeler::autofit(const std::vector<double>& x,
 
     int index = std::min_element(errors.begin(), errors.end()) - errors.begin();
 
-    if (getRSquare() < 0.99)
+    // Check the R^2 of minimum error model.
+    if (rsquares[index] < 0.99)
         {
         // Interpolator is the best.
         mRSquare = 0.0;
