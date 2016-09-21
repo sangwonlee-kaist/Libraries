@@ -4,6 +4,7 @@
 
 #include "solver.hpp"
 #include "solver_factory.hpp"
+#include "isotherm_utility.hpp"
 
 std::shared_ptr<Isotherm>&
 Iast::operator [] (int i)
@@ -29,6 +30,10 @@ Iast::calculate(int mode, ValueType pOrN, std::vector<ValueType> composition)
 
     if (composition.size() < 2)
         throw IastException {__FILE__, __LINE__, "# of components < 2."};
+
+    for (const auto& comp : composition)
+        if (comp <= 0.0)
+            throw IastException {__FILE__, __LINE__, "composition <= 0.0"};
 
     if (mIsotherms.size() != composition.size())
         throw IastException {__FILE__, __LINE__, "# of isotherms != # of components."};
@@ -207,11 +212,87 @@ Iast::modeFixPx(ValueType p, std::vector<ValueType> x)
 void
 Iast::modeFixNx(ValueType n, std::vector<ValueType> x)
     {
-    n = 0.0;
-    x = {n};
-    x = x;
+    // Create solver.
+    SolverFactory factory;
+    std::shared_ptr<Solver> solver = factory.create("simplex");
 
-    throw IastException {__FILE__, __LINE__, "Unsupported mode now."};
+    std::vector<Solver::FunctionType> functions;
+
+    int dim = x.size();
+
+    // Make objective functions
+    int pivot = 0;
+    for (int i = 0; i < dim; ++i)
+        {
+        if (i == pivot)
+            continue;
+
+        functions.push_back([this, i, pivot](const Solver::PointType& p)
+            {
+            int j = pivot;
+
+            return mIsotherms[i]->spressure(p[i]) -
+                   mIsotherms[j]->spressure(p[j]);
+            });
+        }
+
+    functions.push_back([this, n, x, dim](const Solver::PointType& p)
+        {
+        double sum = 0.0;
+
+        for (int i = 0; i < dim; ++i)
+            sum += x[i] / mIsotherms[i]->loading(p[i]);
+
+        sum *= n;
+
+        return sum - 1.0;
+        });
+
+    // Make initial guess.
+    std::vector<ValueType> p;
+    p.resize(dim);
+
+    try {
+        for (int i = 0; i < dim; ++i)
+            p[i] = ::inverseIsotherm(*mIsotherms[i], n * x[i]);
+        }
+    catch (IastException& e)
+        {
+        std::stringstream ss;
+        ss << "Iast calculation falis.\n";
+        ss << "    Reason: " << e.what();
+
+        throw IastException {__FILE__, __LINE__, ss.str()};
+        }
+
+    try {
+        // Solve!
+        solver->setFunctions(functions).
+                setInitialPoint(p);
+
+        solver->solve();
+        }
+    catch (SolverException& e)
+        {
+        std::stringstream ss;
+        ss << "Iast calculation fails.\n";
+        ss << "    Reason: " << e.what();
+
+        throw IastException {__FILE__, __LINE__, ss.str()};
+        }
+
+    p = solver->getRootPoint();
+
+    // Make output.
+    ValueType totalPressure = 0.0;
+    for (int i = 0; i < dim; ++i)
+        totalPressure += p[i] * x[i];
+
+    std::vector<ValueType> y (dim);
+    for (int i = 0; i < dim; ++i)
+        y[i] = p[i] * x[i] / totalPressure;
+
+    mResult = ResultType {totalPressure, y};
     }
 
 Iast::ResultType

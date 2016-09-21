@@ -23,8 +23,8 @@ try {
 
     cout << setw(80) << setfill('=') << "    2. FIX_PY mode test    " << endl;
     Iast::Mode mode = Iast::Mode::FIX_PY;
-    double pressure = 1.0;
-    vector<double> composition {0.5, 0.5};
+    double pressure = 1.2345;
+    vector<double> composition {0.56, 0.44};
     iast.setIsotherms(isotherms).calculate(mode, pressure, composition);
 
     double uptake = 0.0;
@@ -35,6 +35,15 @@ try {
     cout << uptake << endl;
     for (auto a : x)
         cout << a << ", ";
+    cout << endl;
+
+    cout << setw(80) << setfill('=') << "    2-1. FIX_NX mode test    " << endl;
+    mode = Iast::Mode::FIX_NX;
+    tie(pressure, composition) = iast.calculate(mode, uptake, x).getResult();
+
+    cout << pressure << endl;
+    for (auto yy : composition)
+        cout << yy << ", ";
     cout << endl;
 
     cout << setw(80) << setfill('=') << "    3. FIX_PX mode test    " << endl;

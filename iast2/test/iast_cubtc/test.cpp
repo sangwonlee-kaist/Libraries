@@ -38,11 +38,11 @@ main(int argc, char* argv[])
         Iast iast;
         iast.setIsotherms(isotherms);
 
-        vector<double> gasComposition {0.77, 0.15, 0.045, 0.035};
+        vector<double> gasComposition {0.70, 0.15, 0.005, 0.145};
 
         constexpr double tiny = 1.0e-10;
-        constexpr double dp = 0.01;
-        for (double p = dp; p < 1.0 + tiny; p += dp)
+        constexpr double dp = 1.0;
+        for (double p = dp; p <= 20.0 + tiny; p += dp)
             {
             double uptake;
             vector<double> composition;
