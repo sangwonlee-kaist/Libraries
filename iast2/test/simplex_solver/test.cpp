@@ -5,6 +5,7 @@
 
 #include "../../solver.hpp"
 #include "../../simplex_solver.hpp"
+#include "../../solver_factory.hpp"
 
 using namespace std;
 
@@ -25,7 +26,7 @@ func2(const Simplex::PointType& p)
     double x2 = p[1];
     double x3 = p[2];
 
-    return exp(x1 * x2 * x2) + x2;
+    return exp(x1 * x3 * x3) + x2;
     }
 
 double
@@ -44,7 +45,7 @@ main(int argc, char* argv[])
     SolverFactory factory;
     shared_ptr<Solver> sv = factory.create("simplex");
 
-    vector<double> p = {5.0, -2.0, 5.0};
+    vector<double> p = {5.0, -2.0, 2.0};
     vector<Solver::FunctionType> fs= {func1, func2, func3};
 
     sv->setFunctions(fs).

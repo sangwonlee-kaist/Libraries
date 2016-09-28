@@ -60,7 +60,11 @@ SimplexSolver::solve()
         {
         double value = 0.0;
         for (auto& func : mFunctions)
-            value += std::pow(func(p), 2);
+            {
+            ValueType f = func(p);
+            value += f * f;
+            }
+
         return value;
         };
 
@@ -92,5 +96,5 @@ SimplexSolver::getRootPoint() const
 int
 SimplexSolver::getNumFunctionCalls() const
     {
-    return mNumFunctionCalls;
+    return mNumFunctionCalls * mFunctions.size();
     }
