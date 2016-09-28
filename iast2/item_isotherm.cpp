@@ -1,6 +1,7 @@
 #include "item_isotherm.hpp"
 
 #include <sstream>
+#include <iomanip>
 #include <cmath>
 
 #include "isotherm_exception.hpp"
@@ -53,11 +54,15 @@ std::string
 ItemIsotherm::getInfoString() const
     {
     std::stringstream ss;
-    ss << "[Item Isotherm]\n" <<
-          "[Parameters] " << "Reference Isotherm Info =\n" <<
-          mRefIsotherm->getInfoString() <<
-          "\nReference Temperature = " << mRefTemperature <<
-          "\nTarget Temperature = " << mTarTemperature;
+
+    auto& xdata = mIsotherm.getInterpolator().getXData();
+    auto& ydata = mIsotherm.getInterpolator().getYData();
+
+    int size = xdata.size();
+
+    for (int i = 0; i < size - 1; ++i)
+        ss << std::setw(15) << xdata[i] << std::setw(15) << ydata[i] << '\n';
+    ss << std::setw(15) << xdata[i] << std::setw(15) << ydata[i];
 
     return ss.str();
     }
