@@ -76,10 +76,14 @@ Iast::modeFixPy(ValueType p, std::vector<ValueType> y)
         functions.push_back([this, i, p, y, pivot](const Solver::PointType& x)
             {
             int j = pivot;
+            static Isotherm& isoi = *mIsotherms[i];
+            static Isotherm& isoj = *mIsotherms[j];
             //return mIsotherms[i]->spressure(p * y[i] / x[i]) /
             //       mIsotherms[j]->spressure(p * y[j] / x[j]) - 1.0;
-            return mIsotherms[i]->spressure(p * y[i] / x[i]) -
-                   mIsotherms[j]->spressure(p * y[j] / x[j]);
+            //return mIsotherms[i]->spressure(p * y[i] / x[i]) -
+            //       mIsotherms[j]->spressure(p * y[j] / x[j]);
+            return isoi.spressure(p * y[i] / x[i]) -
+                   isoj.spressure(p * y[j] / x[j]);
             });
         }
 
