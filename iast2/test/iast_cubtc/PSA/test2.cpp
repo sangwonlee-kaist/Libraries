@@ -79,6 +79,10 @@ main(int argc, char* argv[])
                     vector<double> yOut (y);
                     vector<double> yCaled (4);
 
+                    for (const auto& yi : y)
+                        if (yi < 0.0 or yi > 1.0)
+                            return 1.0e30;
+
                     try {
                         tie(totalUptakeOut, xOut) = iast.
                             calculate(Iast::Mode::FIX_PY, pDes, yOut).
