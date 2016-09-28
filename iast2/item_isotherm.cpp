@@ -62,7 +62,7 @@ ItemIsotherm::getInfoString() const
 
     for (int i = 0; i < size - 1; ++i)
         ss << std::setw(15) << xdata[i] << std::setw(15) << ydata[i] << '\n';
-    ss << std::setw(15) << xdata[i] << std::setw(15) << ydata[i];
+    ss << std::setw(15) << xdata.back() << std::setw(15) << ydata.back();
 
     return ss.str();
     }
