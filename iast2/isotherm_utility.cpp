@@ -69,7 +69,7 @@ inverseIsotherm(Isotherm& isotherm, double n)
         {
         p1 *= 2.0;
 
-        if (p1 > 10000.0)
+        if (p1 > 16384.000001) // 2^14
             {
             const char* msg {"Given uptake beyonds saturation loading."};
             throw IsothermException {__FILE__, __LINE__, msg};
