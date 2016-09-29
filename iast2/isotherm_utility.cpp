@@ -65,15 +65,20 @@ inverseIsotherm(Isotherm& isotherm, double n)
     double p0 = 0.0;
     double p1 = 1.0;
 
+    double nOld = isotherm.loading(p1);
     while (isotherm.loading(p1) < n)
         {
         p1 *= 2.0;
 
-        if (p1 > 16384.000001) // 2^14
+        double nNew = isotherm.loading(p1);
+        //if (p1 > 16384.000001) // 2^14
+        if (std::abs(1.0 - nOld / nNew) < 1.0e-4)
             {
             const char* msg {"Given uptake beyonds saturation loading."};
             throw IsothermException {__FILE__, __LINE__, msg};
             }
+
+        nOld = nNew;
         }
 
     try {
