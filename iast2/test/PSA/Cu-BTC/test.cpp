@@ -12,6 +12,7 @@
 //#include "../../interpolator_isotherm.hpp"
 
 #include "isotherm_utility.hpp"
+#include "isotherm_factory.hpp"
 
 #include "solver.hpp"
 #include "simplex_solver.hpp"
@@ -38,16 +39,11 @@ main(int argc, char* argv[])
         Iast::IsothermVector isotherms;
         isotherms.resize(4);
 
-        vector<double> x, y;
-        ::readTwoColumns("n2.dat", x, y);
-        //isotherms[0] = modeler.autofit(x, y); // n2
-        isotherms[0] = modeler.fit("langmuir", x, y); // n2
-        ::readTwoColumns("co2.dat", x, y);
-        isotherms[1] = modeler.autofit(x, y); // co2
-        ::readTwoColumns("h2o.dat", x, y);
-        isotherms[2] = modeler.autofit(x, y); // h2o
-        ::readTwoColumns("o2.dat", x, y);
-        isotherms[3] = modeler.autofit(x, y); // o2
+        IsothermFactory factory;
+        isotherms[0] = factory.create("n2.iso");
+        isotherms[1] = factory.create("co2.iso");
+        isotherms[2] = factory.create("h2o.iso");
+        isotherms[3] = factory.create("o2.iso");
 
         for (const auto& iso : isotherms)
             cout << iso->getInfoString() << endl;
@@ -55,10 +51,20 @@ main(int argc, char* argv[])
         Iast iast;
         iast.setIsotherms(isotherms);
 
-        double pDes = 1.0;
+        //double pDes = 1.0;
+        double pAds = 1.0;
         vector<double> yIn {0.70, 0.15, 0.005, 0.145};
 
-        for (double pAds = 5.0; pAds <= 25.0; pAds += 0.5)
+        double nn;
+        vector<double> xx;
+        tie(nn, xx) = iast.calculate(Iast::Mode::FIX_PY, 5.0, yIn).getResult();
+
+        for (const auto& x : xx)
+            cout << x * nn << "    ";
+        cout << endl;
+
+        //for (double pAds = 5.0; pAds <= 20.0; pAds += 1.0)
+        for (double pDes = 0.1; pDes <= 0.9 + 0.001; pDes += 0.1)
             {
             double totalUptakeIn;
             vector<double> xIn;
@@ -72,12 +78,18 @@ main(int argc, char* argv[])
             for (int i = 0; i < 4; ++i)
                 uptakesIn[i] = totalUptakeIn * xIn[i];
 
+            //cout << pAds << "    ";
+            cout << pDes << "    ";
+
+            for (int i = 0; i< 4; ++i)
+                cout << uptakesIn[i] << "    ";
+
             double totalUptakeOut;
             vector<double> xOut (4);
             vector<double> yOut (yIn);
             vector<double> yCaled (4);
 
-            for (int iter = 0; iter < 1000; ++iter)
+            for (int iter = 0; iter < 2000; ++iter)
                 {
                 tie(totalUptakeOut, xOut) = iast.
                     calculate(Iast::Mode::FIX_PY, pDes, yOut).
@@ -102,7 +114,7 @@ main(int argc, char* argv[])
                 if (error < 1.0-10)
                     break;
 
-                double lam = 0.99;
+                double lam = 0.995;
                 for (int i = 0; i < 4; ++i)
                     yOut[i] = lam * yOut[i] + (1.0 - lam) * yCaled[i];
                 }
