@@ -5,6 +5,7 @@
 #include <sstream>
 #include <algorithm>
 #include <cstddef>
+#include <ciso646>
 
 #include "isotherm_exception.hpp"
 #include "linear_interpolator.hpp"

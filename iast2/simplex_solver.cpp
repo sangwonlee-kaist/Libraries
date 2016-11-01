@@ -1,6 +1,7 @@
 #include "simplex_solver.hpp"
 
 #include <cmath>
+#include <ciso646>
 
 SimplexSolver::SimplexSolver() :
     mFunctions {},

@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <limits>
 #include <cmath>
+#include <ciso646>
 
 Simplex::Simplex() :
     Minimizer {},

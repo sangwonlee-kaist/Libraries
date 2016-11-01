@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <ciso646>
 
 double
 LinearInterpolator::at(double x) const

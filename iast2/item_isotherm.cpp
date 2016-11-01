@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iomanip>
 #include <cmath>
+#include <ciso646>
 
 #include "isotherm_exception.hpp"
 #include "isotherm_utility.hpp"

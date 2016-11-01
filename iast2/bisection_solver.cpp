@@ -1,6 +1,7 @@
 #include "bisection_solver.hpp"
 
 #include <cmath>
+#include <ciso646>
 
 BisectionSolver::BisectionSolver() :
     mHigh {},

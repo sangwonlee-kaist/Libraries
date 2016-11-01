@@ -1,6 +1,7 @@
 #include "iast_core.hpp"
 
 #include <sstream>
+#include <ciso646>
 
 #include "solver.hpp"
 #include "solver_factory.hpp"

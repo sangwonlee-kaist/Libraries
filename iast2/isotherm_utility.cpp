@@ -4,6 +4,7 @@
 #include <fstream>
 #include <cmath>
 #include <algorithm>
+#include <ciso646>
 
 #include "isotherm_factory.hpp"
 #include "isotherm_exception.hpp"

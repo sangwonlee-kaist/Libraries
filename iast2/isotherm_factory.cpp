@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <stdexcept>
+#include <ciso646>
 
 #include "isotherm_exception.hpp"
 #include "langmuir_isotherm.hpp"

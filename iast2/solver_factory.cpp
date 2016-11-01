@@ -1,5 +1,7 @@
 #include "solver_factory.hpp"
 
+#include <ciso646>
+
 #include "simplex_solver.hpp"
 #include "bisection_solver.hpp"
 //#include "arma_solver.hpp"

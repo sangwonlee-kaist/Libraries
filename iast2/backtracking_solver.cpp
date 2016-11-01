@@ -1,5 +1,5 @@
 #include "backtracking_solver.hpp"
-
+#include <ciso646>
 
 BacktrackingSolver::BacktrackingSolver()
     {
